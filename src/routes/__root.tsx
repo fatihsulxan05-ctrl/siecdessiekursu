@@ -73,13 +73,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { name: "description", content: "Quran Tracker Plus is a web application for tracking student progress in religious studies." },
       { name: "author", content: "Lovable" },
       { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:description", content: "Quran Tracker Plus is a web application for tracking student progress in religious studies." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Lovable App" },
+      { name: "twitter:description", content: "Quran Tracker Plus is a web application for tracking student progress in religious studies." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/931714a4-4e20-4060-8e70-bb6b0a833374/id-preview-fef97194--9f5b33c0-0d90-48e4-9784-f0c3bf5e5bc2.lovable.app-1778497841998.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/931714a4-4e20-4060-8e70-bb6b0a833374/id-preview-fef97194--9f5b33c0-0d90-48e4-9784-f0c3bf5e5bc2.lovable.app-1778497841998.png" },
     ],
     links: [
       {
@@ -113,7 +117,6 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
     </QueryClientProvider>
   );
