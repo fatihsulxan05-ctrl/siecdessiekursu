@@ -191,6 +191,7 @@ function Index() {
   const [parolaHata, setParolaHata] = useState<string | null>(null);
 
   const [duzenlenen, setDuzenlenen] = useState<Talebe | null>(null);
+  const [profilGoster, setProfilGoster] = useState<Talebe | null>(null);
   const [hocaDuzenle, setHocaDuzenle] = useState(false);
   const [hocaTaslak, setHocaTaslak] = useState(hoca);
   const [seciliHafta, setSeciliHafta] = useState<number>(() => haftaBaslastik());
