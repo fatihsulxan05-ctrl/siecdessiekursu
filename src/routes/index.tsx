@@ -379,16 +379,16 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-6xl px-3 py-8 sm:px-6 sm:py-12">
-        <header className="mb-8 flex flex-col items-center gap-4 text-center sm:mb-10">
-          <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
-            <GraduationCap className="h-7 w-7" />
+      <div className="mx-auto max-w-6xl px-2 py-4 sm:px-6 sm:py-12">
+        <header className="mb-5 flex flex-col items-center gap-2 text-center sm:mb-10 sm:gap-4">
+          <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary sm:h-14 sm:w-14">
+            <GraduationCap className="h-5 w-5 sm:h-7 sm:w-7" />
           </div>
           <div>
-            <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-5xl">
+            <h1 className="text-xl font-semibold tracking-tight text-foreground sm:text-5xl">
               SİEC DESSİE KURSU
             </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">
               Talebe Başarı Paneli
             </p>
           </div>
@@ -558,7 +558,114 @@ function Index() {
           </div>
         </div>
 
-        <Card className="overflow-hidden">
+        {/* Mobil: kart listesi */}
+        <div className="space-y-2 sm:hidden">
+          <div className="flex items-center justify-between gap-2 rounded-md border border-border/60 bg-secondary/30 px-3 py-2">
+            <span className="text-xs uppercase tracking-wider text-muted-foreground">
+              Kıraat günü
+            </span>
+            <Select
+              value={String(seciliGun)}
+              onValueChange={(v) => setSeciliGun(Number(v))}
+            >
+              <SelectTrigger className="h-8 w-[140px] text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {GUN_UZUN.map((isim, i) => (
+                  <SelectItem key={i} value={String(i)} className="text-xs">
+                    {isim}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {talebeler.map((t, i) => {
+            const hafta = ilerleme(t, seciliHafta, haftaSonu);
+            const verdi = getKiraatGunler(t, seciliHafta).includes(seciliGun);
+            return (
+              <Card key={t.id} className="border-border/60">
+                <CardContent className="flex items-center gap-3 px-3 py-2.5">
+                  <span className="w-4 text-[11px] text-muted-foreground tabular-nums">
+                    {i + 1}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setProfilGoster(t)}
+                    className="flex min-w-0 flex-1 items-center gap-2.5 text-left"
+                  >
+                    <TalebeAvatar talebe={t} boyut={40} />
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-sm font-medium text-foreground">
+                        {t.isim}
+                      </div>
+                      <div className="mt-0.5 flex items-center gap-1.5 text-[11px] text-muted-foreground tabular-nums">
+                        <span>sf {t.sayfa}</span>
+                        <span>·</span>
+                        <span>{cuzHesapla(t.sayfa)}. cüz</span>
+                      </div>
+                    </div>
+                  </button>
+                  <div className="flex flex-col items-end gap-1">
+                    <GunDurum
+                      verdi={verdi}
+                      duzenlenebilir={hocaModu}
+                      onToggle={() => kiraatGunToggle(t, seciliGun)}
+                    />
+                    <HedefRozet
+                      yapilan={hafta}
+                      hedef={t.hedefHaftalik}
+                      bazSayfa={haftaBazSayfa(t, seciliHafta)}
+                    />
+                  </div>
+                  {hocaModu && (
+                    <div className="flex flex-col gap-0.5">
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-7 w-7"
+                        onClick={() => setDuzenlenen(t)}
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-7 w-7 text-destructive hover:text-destructive"
+                        onClick={() => sil(t.id)}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
+
+          {!yuklendi && talebeler.length === 0 && (
+            <div className="py-8 text-center text-sm text-muted-foreground">
+              <span className="inline-flex items-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Veriler yükleniyor…
+              </span>
+            </div>
+          )}
+          {yuklendi && yuklemeHata && (
+            <div className="py-8 text-center text-sm text-destructive">
+              Bağlantı hatası: {yuklemeHata}
+            </div>
+          )}
+          {yuklendi && !yuklemeHata && talebeler.length === 0 && (
+            <div className="py-8 text-center text-sm text-muted-foreground">
+              Henüz talebe yok.
+            </div>
+          )}
+        </div>
+
+        {/* Tablet/masaüstü: tablo */}
+        <Card className="hidden overflow-hidden sm:block">
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
