@@ -598,7 +598,16 @@ function Index() {
                     <TableCell className="text-center text-xs text-muted-foreground">
                       {i + 1}
                     </TableCell>
-                    <TableCell className="font-medium">{t.isim}</TableCell>
+                    <TableCell className="font-medium">
+                      <button
+                        type="button"
+                        onClick={() => setProfilGoster(t)}
+                        className="group inline-flex items-center gap-2 text-left hover:text-primary"
+                      >
+                        <TalebeAvatar talebe={t} boyut={36} />
+                        <span className="group-hover:underline">{t.isim}</span>
+                      </button>
+                    </TableCell>
                     <TableCell className="text-center">
                       <GunDurum
                         verdi={getKiraatGunler(t, seciliHafta).includes(seciliGun)}
