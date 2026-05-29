@@ -558,126 +558,19 @@ function Index() {
           </div>
         </div>
 
-        {/* Mobil: kart listesi */}
-        <div className="space-y-2 sm:hidden">
-          <div className="flex items-center justify-between gap-2 rounded-md border border-border/60 bg-secondary/30 px-3 py-2">
-            <span className="text-xs uppercase tracking-wider text-muted-foreground">
-              Kıraat günü
-            </span>
-            <Select
-              value={String(seciliGun)}
-              onValueChange={(v) => setSeciliGun(Number(v))}
-            >
-              <SelectTrigger className="h-8 w-[140px] text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {GUN_UZUN.map((isim, i) => (
-                  <SelectItem key={i} value={String(i)} className="text-xs">
-                    {isim}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {talebeler.map((t, i) => {
-            const hafta = ilerleme(t, seciliHafta, haftaSonu);
-            const verdi = getKiraatGunler(t, seciliHafta).includes(seciliGun);
-            return (
-              <Card key={t.id} className="border-border/60">
-                <CardContent className="flex items-center gap-3 px-3 py-2.5">
-                  <span className="w-4 text-[11px] text-muted-foreground tabular-nums">
-                    {i + 1}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setProfilGoster(t)}
-                    className="flex min-w-0 flex-1 items-center gap-2.5 text-left"
-                  >
-                    <TalebeAvatar talebe={t} boyut={40} />
-                    <div className="min-w-0 flex-1">
-                      <div className="truncate text-sm font-medium text-foreground">
-                        {t.isim}
-                      </div>
-                      <div className="mt-0.5 flex items-center gap-1.5 text-[11px] text-muted-foreground tabular-nums">
-                        <span>sf {t.sayfa}</span>
-                        <span>·</span>
-                        <span>{cuzHesapla(t.sayfa)}. cüz</span>
-                      </div>
-                    </div>
-                  </button>
-                  <div className="flex flex-col items-end gap-1">
-                    <GunDurum
-                      verdi={verdi}
-                      duzenlenebilir={hocaModu}
-                      onToggle={() => kiraatGunToggle(t, seciliGun)}
-                    />
-                    <HedefRozet
-                      yapilan={hafta}
-                      hedef={t.hedefHaftalik}
-                      bazSayfa={haftaBazSayfa(t, seciliHafta)}
-                    />
-                  </div>
-                  {hocaModu && (
-                    <div className="flex flex-col gap-0.5">
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-7 w-7"
-                        onClick={() => setDuzenlenen(t)}
-                      >
-                        <Pencil className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-7 w-7 text-destructive hover:text-destructive"
-                        onClick={() => sil(t.id)}
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            );
-          })}
-
-          {!yuklendi && talebeler.length === 0 && (
-            <div className="py-8 text-center text-sm text-muted-foreground">
-              <span className="inline-flex items-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Veriler yükleniyor…
-              </span>
-            </div>
-          )}
-          {yuklendi && yuklemeHata && (
-            <div className="py-8 text-center text-sm text-destructive">
-              Bağlantı hatası: {yuklemeHata}
-            </div>
-          )}
-          {yuklendi && !yuklemeHata && talebeler.length === 0 && (
-            <div className="py-8 text-center text-sm text-muted-foreground">
-              Henüz talebe yok.
-            </div>
-          )}
-        </div>
-
-        {/* Tablet/masaüstü: tablo */}
-        <Card className="hidden overflow-hidden sm:block">
+        <Card className="overflow-hidden">
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/40">
-                  <TableHead className="w-12 text-center">#</TableHead>
-                  <TableHead>Talebe</TableHead>
-                  <TableHead className="text-center">
+                  <TableHead className="w-8 px-1 text-center text-[11px] sm:w-12 sm:px-4">#</TableHead>
+                  <TableHead className="px-1.5 text-xs sm:px-4 sm:text-sm">Talebe</TableHead>
+                  <TableHead className="px-1 text-center sm:px-4">
                     <Select
                       value={String(seciliGun)}
                       onValueChange={(v) => setSeciliGun(Number(v))}
                     >
-                      <SelectTrigger className="mx-auto h-7 w-[120px] text-xs">
+                      <SelectTrigger className="mx-auto h-7 w-[88px] px-2 text-[10px] sm:w-[120px] sm:text-xs">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -689,11 +582,11 @@ function Index() {
                       </SelectContent>
                     </Select>
                   </TableHead>
-                  <TableHead className="text-center">Sayfa</TableHead>
-                  <TableHead className="text-center">Cüz</TableHead>
-                  <TableHead className="text-center">Hedef</TableHead>
+                  <TableHead className="px-1 text-center text-[11px] sm:px-4 sm:text-sm">Sf</TableHead>
+                  <TableHead className="px-1 text-center text-[11px] sm:px-4 sm:text-sm">Cüz</TableHead>
+                  <TableHead className="px-1 text-center text-[11px] sm:px-4 sm:text-sm">Hedef</TableHead>
                   {hocaModu && (
-                    <TableHead className="w-24 text-right">İşlem</TableHead>
+                    <TableHead className="w-14 px-1 text-right text-[11px] sm:w-24 sm:px-4 sm:text-sm">İşlem</TableHead>
                   )}
                 </TableRow>
               </TableHeader>
@@ -702,33 +595,33 @@ function Index() {
                   const hafta = ilerleme(t, seciliHafta, haftaSonu);
                   return (
                   <TableRow key={t.id} className="hover:bg-muted/30">
-                    <TableCell className="text-center text-xs text-muted-foreground">
+                    <TableCell className="px-1 py-2 text-center text-[11px] text-muted-foreground sm:px-4 sm:py-3 sm:text-xs">
                       {i + 1}
                     </TableCell>
-                    <TableCell className="font-medium">
+                    <TableCell className="px-1.5 py-2 font-medium sm:px-4 sm:py-3">
                       <button
                         type="button"
                         onClick={() => setProfilGoster(t)}
-                        className="group inline-flex items-center gap-2 text-left hover:text-primary"
+                        className="group inline-flex items-center gap-1.5 text-left text-xs hover:text-primary sm:gap-2 sm:text-sm"
                       >
-                        <TalebeAvatar talebe={t} boyut={36} />
-                        <span className="group-hover:underline">{t.isim}</span>
+                        <TalebeAvatar talebe={t} boyut={28} />
+                        <span className="truncate group-hover:underline">{t.isim}</span>
                       </button>
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="px-1 py-2 text-center sm:px-4 sm:py-3">
                       <GunDurum
                         verdi={getKiraatGunler(t, seciliHafta).includes(seciliGun)}
                         duzenlenebilir={hocaModu}
                         onToggle={() => kiraatGunToggle(t, seciliGun)}
                       />
                     </TableCell>
-                    <TableCell className="text-center tabular-nums">
+                    <TableCell className="px-1 py-2 text-center text-[11px] tabular-nums sm:px-4 sm:py-3 sm:text-sm">
                       {t.sayfa}
                     </TableCell>
-                    <TableCell className="text-center tabular-nums text-muted-foreground">
+                    <TableCell className="px-1 py-2 text-center text-[11px] tabular-nums text-muted-foreground sm:px-4 sm:py-3 sm:text-sm">
                       {cuzHesapla(t.sayfa)}
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="px-1 py-2 text-center sm:px-4 sm:py-3">
                       <HedefRozet
                         yapilan={hafta}
                         hedef={t.hedefHaftalik}
@@ -736,23 +629,23 @@ function Index() {
                       />
                     </TableCell>
                     {hocaModu && (
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-1">
+                      <TableCell className="px-1 py-2 text-right sm:px-4 sm:py-3">
+                        <div className="flex justify-end gap-0.5 sm:gap-1">
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="h-8 w-8"
+                            className="h-7 w-7 sm:h-8 sm:w-8"
                             onClick={() => setDuzenlenen(t)}
                           >
-                            <Pencil className="h-4 w-4" />
+                            <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                           </Button>
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="h-8 w-8 text-destructive hover:text-destructive"
+                            className="h-7 w-7 text-destructive hover:text-destructive sm:h-8 sm:w-8"
                             onClick={() => sil(t.id)}
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                           </Button>
                         </div>
                       </TableCell>
