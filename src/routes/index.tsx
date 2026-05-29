@@ -1122,23 +1122,32 @@ function GunDurum({
   const sinif = verdi
     ? "bg-primary text-primary-foreground border-primary"
     : "bg-muted/40 text-muted-foreground border-border";
-  const etiket = verdi ? "Verdi" : "Vermedi";
+  const kisa = verdi ? "✓" : "—";
+  const uzun = verdi ? "Verdi" : "Vermedi";
+  const icerik = (
+    <>
+      <span className="sm:hidden">{kisa}</span>
+      <span className="hidden sm:inline">{uzun}</span>
+    </>
+  );
   if (duzenlenebilir) {
     return (
       <button
         type="button"
         onClick={onToggle}
-        className={`rounded-md border px-2 py-0.5 text-[11px] font-medium transition-colors hover:opacity-90 ${sinif}`}
+        title={uzun}
+        className={`rounded-md border px-1.5 py-0.5 text-[10px] font-medium transition-colors hover:opacity-90 sm:px-2 sm:text-[11px] ${sinif}`}
       >
-        {etiket}
+        {icerik}
       </button>
     );
   }
   return (
     <span
-      className={`inline-flex rounded-md border px-2 py-0.5 text-[11px] font-medium ${sinif}`}
+      title={uzun}
+      className={`inline-flex rounded-md border px-1.5 py-0.5 text-[10px] font-medium sm:px-2 sm:text-[11px] ${sinif}`}
     >
-      {etiket}
+      {icerik}
     </span>
   );
 }
