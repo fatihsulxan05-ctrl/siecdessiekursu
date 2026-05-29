@@ -379,16 +379,16 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-6xl px-3 py-8 sm:px-6 sm:py-12">
-        <header className="mb-8 flex flex-col items-center gap-4 text-center sm:mb-10">
-          <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
-            <GraduationCap className="h-7 w-7" />
+      <div className="mx-auto max-w-6xl px-2 py-4 sm:px-6 sm:py-12">
+        <header className="mb-5 flex flex-col items-center gap-2 text-center sm:mb-10 sm:gap-4">
+          <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary sm:h-14 sm:w-14">
+            <GraduationCap className="h-5 w-5 sm:h-7 sm:w-7" />
           </div>
           <div>
-            <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-5xl">
+            <h1 className="text-xl font-semibold tracking-tight text-foreground sm:text-5xl">
               SİEC DESSİE KURSU
             </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">
               Talebe Başarı Paneli
             </p>
           </div>
