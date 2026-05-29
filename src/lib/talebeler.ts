@@ -22,6 +22,10 @@ export type Talebe = {
   hedefHaftalik: number;
   gecmis: SayfaKaydi[];
   sira?: number;
+  fotoUrl?: string;
+  telefon?: string;
+  dogum?: string;
+  notlar?: string;
 };
 
 const COL = "talebeler";
@@ -49,6 +53,10 @@ export function talebeleriDinle(
             typeof v.hedefHaftalik === "number" ? v.hedefHaftalik : 5,
           gecmis: Array.isArray(v.gecmis) ? v.gecmis : [],
           sira: typeof v.sira === "number" ? v.sira : 0,
+          fotoUrl: typeof v.fotoUrl === "string" ? v.fotoUrl : undefined,
+          telefon: typeof v.telefon === "string" ? v.telefon : undefined,
+          dogum: typeof v.dogum === "string" ? v.dogum : undefined,
+          notlar: typeof v.notlar === "string" ? v.notlar : undefined,
         };
       });
       cb(liste);

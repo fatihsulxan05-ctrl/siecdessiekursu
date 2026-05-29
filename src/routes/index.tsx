@@ -42,6 +42,11 @@ import {
   ChevronRight,
   CalendarDays,
   Loader2,
+  Camera,
+  Phone,
+  Cake,
+  StickyNote,
+  User as UserIcon,
 } from "lucide-react";
 import {
   talebeleriDinle,
@@ -52,6 +57,8 @@ import {
   type Talebe,
   type SayfaKaydi,
 } from "@/lib/talebeler";
+import { dosyaFotoDataUrl, bashHarfler } from "@/lib/foto";
+import { Textarea } from "@/components/ui/textarea";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -184,6 +191,7 @@ function Index() {
   const [parolaHata, setParolaHata] = useState<string | null>(null);
 
   const [duzenlenen, setDuzenlenen] = useState<Talebe | null>(null);
+  const [profilGoster, setProfilGoster] = useState<Talebe | null>(null);
   const [hocaDuzenle, setHocaDuzenle] = useState(false);
   const [hocaTaslak, setHocaTaslak] = useState(hoca);
   const [seciliHafta, setSeciliHafta] = useState<number>(() => haftaBaslastik());
@@ -590,7 +598,16 @@ function Index() {
                     <TableCell className="text-center text-xs text-muted-foreground">
                       {i + 1}
                     </TableCell>
-                    <TableCell className="font-medium">{t.isim}</TableCell>
+                    <TableCell className="font-medium">
+                      <button
+                        type="button"
+                        onClick={() => setProfilGoster(t)}
+                        className="group inline-flex items-center gap-2 text-left hover:text-primary"
+                      >
+                        <TalebeAvatar talebe={t} boyut={36} />
+                        <span className="group-hover:underline">{t.isim}</span>
+                      </button>
+                    </TableCell>
                     <TableCell className="text-center">
                       <GunDurum
                         verdi={getKiraatGunler(t, seciliHafta).includes(seciliGun)}
@@ -808,7 +825,230 @@ function Index() {
           setDuzenlenen(null);
         }}
       />
+
+      <ProfilDiyalog
+        talebe={
+          profilGoster
+            ? (talebeler.find((x) => x.id === profilGoster.id) ?? profilGoster)
+            : null
+        }
+        hocaModu={hocaModu}
+        onClose={() => setProfilGoster(null)}
+        onDuzenle={(t) => {
+          setProfilGoster(null);
+          setDuzenlenen(t);
+        }}
+        onFotoDegistir={(t, fotoUrl) => {
+          void talebeGuncelle(t.id, { fotoUrl });
+        }}
+        onNotKaydet={(t, patch) => {
+          void talebeGuncelle(t.id, patch);
+        }}
+      />
     </div>
+  );
+}
+
+function TalebeAvatar({
+  talebe,
+  boyut = 40,
+}: {
+  talebe: Talebe;
+  boyut?: number;
+}) {
+  const stil = { width: boyut, height: boyut } as const;
+  if (talebe.fotoUrl) {
+    return (
+      <img
+        src={talebe.fotoUrl}
+        alt={talebe.isim}
+        style={stil}
+        className="rounded-full object-cover ring-1 ring-border"
+      />
+    );
+  }
+  return (
+    <div
+      style={stil}
+      className="inline-flex items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary ring-1 ring-primary/20"
+    >
+      {bashHarfler(talebe.isim)}
+    </div>
+  );
+}
+
+function ProfilDiyalog({
+  talebe,
+  hocaModu,
+  onClose,
+  onDuzenle,
+  onFotoDegistir,
+  onNotKaydet,
+}: {
+  talebe: Talebe | null;
+  hocaModu: boolean;
+  onClose: () => void;
+  onDuzenle: (t: Talebe) => void;
+  onFotoDegistir: (t: Talebe, fotoUrl: string) => void;
+  onNotKaydet: (
+    t: Talebe,
+    patch: Partial<Pick<Talebe, "telefon" | "dogum" | "notlar">>,
+  ) => void;
+}) {
+  const [yukleniyor, setYukleniyor] = useState(false);
+  const [hata, setHata] = useState<string | null>(null);
+  const [telefon, setTelefon] = useState("");
+  const [dogum, setDogum] = useState("");
+  const [notlar, setNotlar] = useState("");
+
+  useEffect(() => {
+    if (talebe) {
+      setTelefon(talebe.telefon ?? "");
+      setDogum(talebe.dogum ?? "");
+      setNotlar(talebe.notlar ?? "");
+      setHata(null);
+    }
+  }, [talebe?.id]);
+
+  if (!talebe) return null;
+
+  const fotoSec = async (file: File | undefined) => {
+    if (!file) return;
+    setHata(null);
+    setYukleniyor(true);
+    try {
+      const url = await dosyaFotoDataUrl(file);
+      onFotoDegistir(talebe, url);
+    } catch (e) {
+      setHata(e instanceof Error ? e.message : "Yükleme başarısız");
+    } finally {
+      setYukleniyor(false);
+    }
+  };
+
+  const haftalikHedef = talebe.hedefHaftalik;
+
+  return (
+    <Dialog open={!!talebe} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Talebe Profili</DialogTitle>
+          <DialogDescription>
+            Fotoğraf ve kişisel bilgiler.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="flex flex-col items-center gap-3">
+          <div className="relative">
+            <TalebeAvatar talebe={talebe} boyut={120} />
+            {hocaModu && (
+              <label
+                className="absolute -bottom-1 -right-1 inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-primary text-primary-foreground shadow ring-2 ring-background hover:opacity-90"
+                title="Fotoğraf yükle"
+              >
+                {yukleniyor ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Camera className="h-4 w-4" />
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    void fotoSec(e.target.files?.[0]);
+                    e.target.value = "";
+                  }}
+                />
+              </label>
+            )}
+          </div>
+          <div className="text-center">
+            <div className="text-lg font-semibold">{talebe.isim}</div>
+            <div className="text-xs text-muted-foreground">
+              Sayfa {talebe.sayfa} · {cuzHesapla(talebe.sayfa)}. cüz · Hedef{" "}
+              {haftalikHedef} sf/hafta
+            </div>
+          </div>
+          {hocaModu && talebe.fotoUrl && (
+            <Button
+              size="sm"
+              variant="ghost"
+              className="text-xs text-muted-foreground"
+              onClick={() => onFotoDegistir(talebe, "")}
+            >
+              Fotoğrafı kaldır
+            </Button>
+          )}
+          {hata && <p className="text-xs text-destructive">{hata}</p>}
+        </div>
+
+        <div className="mt-2 space-y-3">
+          <div className="space-y-1.5">
+            <Label className="flex items-center gap-1.5">
+              <Phone className="h-3.5 w-3.5" /> Telefon
+            </Label>
+            <Input
+              value={telefon}
+              onChange={(e) => setTelefon(e.target.value.slice(0, 30))}
+              disabled={!hocaModu}
+              placeholder="—"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="flex items-center gap-1.5">
+              <Cake className="h-3.5 w-3.5" /> Doğum tarihi
+            </Label>
+            <Input
+              type="date"
+              value={dogum}
+              onChange={(e) => setDogum(e.target.value)}
+              disabled={!hocaModu}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="flex items-center gap-1.5">
+              <StickyNote className="h-3.5 w-3.5" /> Notlar
+            </Label>
+            <Textarea
+              value={notlar}
+              onChange={(e) => setNotlar(e.target.value.slice(0, 600))}
+              disabled={!hocaModu}
+              rows={3}
+              placeholder="—"
+            />
+          </div>
+        </div>
+
+        <DialogFooter className="gap-2 sm:gap-2">
+          <Button variant="ghost" onClick={onClose}>
+            Kapat
+          </Button>
+          {hocaModu && (
+            <>
+              <Button
+                variant="outline"
+                onClick={() => onDuzenle(talebe)}
+              >
+                <UserIcon className="h-4 w-4" /> İsim & ilerleme
+              </Button>
+              <Button
+                onClick={() => {
+                  onNotKaydet(talebe, {
+                    telefon: telefon.trim() || undefined,
+                    dogum: dogum || undefined,
+                    notlar: notlar.trim() || undefined,
+                  });
+                  onClose();
+                }}
+              >
+                Kaydet
+              </Button>
+            </>
+          )}
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
