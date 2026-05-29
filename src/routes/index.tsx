@@ -42,6 +42,11 @@ import {
   ChevronRight,
   CalendarDays,
   Loader2,
+  Camera,
+  Phone,
+  Cake,
+  StickyNote,
+  User as UserIcon,
 } from "lucide-react";
 import {
   talebeleriDinle,
@@ -52,6 +57,8 @@ import {
   type Talebe,
   type SayfaKaydi,
 } from "@/lib/talebeler";
+import { dosyaFotoDataUrl, bashHarfler } from "@/lib/foto";
+import { Textarea } from "@/components/ui/textarea";
 
 export const Route = createFileRoute("/")({
   head: () => ({
