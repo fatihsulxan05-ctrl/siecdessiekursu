@@ -1131,7 +1131,7 @@ function GunDurum({
         type="button"
         onClick={onToggle}
         title={uzun}
-        className={`rounded-md border px-2 py-1 text-xs font-semibold transition-colors hover:opacity-90 sm:px-2.5 sm:text-sm ${sinif}`}
+        className={`rounded-md border px-1.5 py-0.5 text-[11px] font-semibold transition-colors hover:opacity-90 sm:px-2 sm:py-1 sm:text-xs ${sinif}`}
       >
         {icerik}
       </button>
@@ -1140,7 +1140,7 @@ function GunDurum({
   return (
     <span
       title={uzun}
-      className={`inline-flex rounded-md border px-2 py-1 text-xs font-semibold sm:px-2.5 sm:text-sm ${sinif}`}
+      className={`inline-flex rounded-md border px-1.5 py-0.5 text-[11px] font-semibold sm:px-2 sm:py-1 sm:text-xs ${sinif}`}
     >
       {icerik}
     </span>
