@@ -765,38 +765,33 @@ function Index() {
           <div className="space-y-3">
             <div className="space-y-1">
               <Label>Mevcut parola</Label>
-              <Input
-                type="password"
+              <ParolaInput
                 value={eskiParola}
-                onChange={(e) => {
-                  setEskiParola(e.target.value.slice(0, 50));
+                onChange={(v) => {
+                  setEskiParola(v.slice(0, 50));
                   setParolaDegistirHata(null);
                 }}
               />
             </div>
             <div className="space-y-1">
               <Label>Yeni parola</Label>
-              <Input
-                type="password"
+              <ParolaInput
                 value={yeniParola}
-                onChange={(e) => {
-                  setYeniParola(e.target.value.slice(0, 50));
+                onChange={(v) => {
+                  setYeniParola(v.slice(0, 50));
                   setParolaDegistirHata(null);
                 }}
               />
             </div>
             <div className="space-y-1">
               <Label>Yeni parola (tekrar)</Label>
-              <Input
-                type="password"
+              <ParolaInput
                 value={yeniParolaTekrar}
-                onChange={(e) => {
-                  setYeniParolaTekrar(e.target.value.slice(0, 50));
+                onChange={(v) => {
+                  setYeniParolaTekrar(v.slice(0, 50));
                   setParolaDegistirHata(null);
                 }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") parolaDegistir();
-                }}
+                onEnter={parolaDegistir}
               />
             </div>
             {parolaDegistirHata && (
