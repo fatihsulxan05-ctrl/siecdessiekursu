@@ -720,21 +720,15 @@ function Index() {
           </DialogHeader>
           <div className="space-y-2">
             <Label>Parola</Label>
-            <Input
-              type="password"
+            <ParolaInput
               value={parolaTaslak}
-              onChange={(e) => {
-                setParolaTaslak(e.target.value.slice(0, 50));
+              onChange={(v) => {
+                setParolaTaslak(v.slice(0, 50));
                 setParolaHata(null);
               }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") girisYap();
-              }}
+              onEnter={girisYap}
+              hata={!!parolaHata}
               autoFocus
-              aria-invalid={parolaHata ? true : undefined}
-              className={
-                parolaHata ? "border-destructive focus-visible:ring-destructive" : ""
-              }
             />
             {parolaHata && (
               <p className="text-xs text-destructive">{parolaHata}</p>
