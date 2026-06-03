@@ -893,19 +893,17 @@ function ProfilDiyalog({
   onFotoDegistir: (t: Talebe, fotoUrl: string) => void;
   onNotKaydet: (
     t: Talebe,
-    patch: Partial<Pick<Talebe, "telefon" | "dogum" | "notlar">>,
+    patch: Partial<Pick<Talebe, "telefon" | "notlar">>,
   ) => void;
 }) {
   const [yukleniyor, setYukleniyor] = useState(false);
   const [hata, setHata] = useState<string | null>(null);
   const [telefon, setTelefon] = useState("");
-  const [dogum, setDogum] = useState("");
   const [notlar, setNotlar] = useState("");
 
   useEffect(() => {
     if (talebe) {
       setTelefon(talebe.telefon ?? "");
-      setDogum(talebe.dogum ?? "");
       setNotlar(talebe.notlar ?? "");
       setHata(null);
     }
