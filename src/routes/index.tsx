@@ -596,16 +596,16 @@ function Index() {
                   const hafta = ilerleme(t, seciliHafta, haftaSonu);
                   return (
                   <TableRow key={t.id} className="hover:bg-muted/30">
-                    <TableCell className="px-1 py-2 text-center text-[11px] text-muted-foreground sm:px-4 sm:py-3 sm:text-xs">
+                    <TableCell className="px-1 py-2 text-center text-xs text-muted-foreground sm:px-4 sm:py-3 sm:text-sm">
                       {i + 1}
                     </TableCell>
                     <TableCell className="px-1.5 py-2 font-medium sm:px-4 sm:py-3">
                       <button
                         type="button"
                         onClick={() => setProfilGoster(t)}
-                        className="group inline-flex items-center gap-1.5 text-left text-xs hover:text-primary sm:gap-2 sm:text-sm"
+                        className="group inline-flex items-center gap-1.5 text-left text-sm hover:text-primary sm:gap-2"
                       >
-                        <TalebeAvatar talebe={t} boyut={28} />
+                        <TalebeAvatar talebe={t} boyut={30} />
                         <span className="truncate group-hover:underline">{t.isim}</span>
                       </button>
                     </TableCell>
@@ -616,10 +616,10 @@ function Index() {
                         onToggle={() => kiraatGunToggle(t, seciliGun)}
                       />
                     </TableCell>
-                    <TableCell className="px-2 pr-3 py-2 text-center text-[11px] tabular-nums sm:px-4 sm:py-3 sm:text-sm">
+                    <TableCell className="px-2 pr-3 py-2 text-center text-xs tabular-nums sm:px-4 sm:py-3 sm:text-sm">
                       {t.sayfa}
                     </TableCell>
-                    <TableCell className="px-2 pl-3 py-2 text-center text-[11px] tabular-nums text-muted-foreground sm:px-4 sm:py-3 sm:text-sm">
+                    <TableCell className="px-2 pl-3 py-2 text-center text-xs tabular-nums text-muted-foreground sm:px-4 sm:py-3 sm:text-sm">
                       {cuzHesapla(t.sayfa)}
                     </TableCell>
                     <TableCell className="px-1 py-2 text-center sm:px-4 sm:py-3">
