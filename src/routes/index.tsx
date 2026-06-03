@@ -44,9 +44,10 @@ import {
   Loader2,
   Camera,
   Phone,
-  Cake,
   StickyNote,
   User as UserIcon,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import {
   talebeleriDinle,
