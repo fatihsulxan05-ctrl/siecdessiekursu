@@ -1396,3 +1396,44 @@ function DersKutu({
     </label>
   );
 }
+
+function ParolaInput({
+  value,
+  onChange,
+  onEnter,
+  hata,
+  autoFocus,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  onEnter?: () => void;
+  hata?: boolean;
+  autoFocus?: boolean;
+}) {
+  const [goster, setGoster] = useState(false);
+  return (
+    <div className="relative">
+      <Input
+        type={goster ? "text" : "password"}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && onEnter) onEnter();
+        }}
+        autoFocus={autoFocus}
+        aria-invalid={hata ? true : undefined}
+        className={`pr-10 text-base ${hata ? "border-destructive focus-visible:ring-destructive" : ""}`}
+      />
+      <button
+        type="button"
+        onClick={() => setGoster((v) => !v)}
+        className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-foreground"
+        tabIndex={-1}
+        aria-label={goster ? "Parolayı gizle" : "Parolayı göster"}
+      >
+        {goster ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+      </button>
+    </div>
+  );
+}
+
