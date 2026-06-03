@@ -1037,7 +1037,6 @@ function ProfilDiyalog({
                 onClick={() => {
                   onNotKaydet(talebe, {
                     telefon: telefon.trim() || undefined,
-                    dogum: dogum || undefined,
                     notlar: notlar.trim() || undefined,
                   });
                   onClose();
