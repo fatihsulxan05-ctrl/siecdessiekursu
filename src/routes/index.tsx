@@ -564,30 +564,30 @@ function Index() {
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/40">
-                  <TableHead className="w-8 px-1 text-center text-[11px] sm:w-12 sm:px-4">#</TableHead>
-                  <TableHead className="px-1.5 text-xs sm:px-4 sm:text-sm">Talebe</TableHead>
+                  <TableHead className="w-8 px-1 text-center text-xs sm:w-12 sm:px-4">#</TableHead>
+                  <TableHead className="px-1.5 text-sm sm:px-4">Talebe</TableHead>
                   <TableHead className="px-1 text-center sm:px-4">
                     <Select
                       value={String(seciliGun)}
                       onValueChange={(v) => setSeciliGun(Number(v))}
                     >
-                      <SelectTrigger className="mx-auto h-7 w-[88px] px-2 text-[10px] sm:w-[120px] sm:text-xs">
+                      <SelectTrigger className="mx-auto h-8 w-[100px] px-2 text-xs sm:w-[130px] sm:text-sm">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         {GUN_UZUN.map((isim, i) => (
-                          <SelectItem key={i} value={String(i)} className="text-xs">
-                            Kıraat · {isim}
+                          <SelectItem key={i} value={String(i)} className="text-sm">
+                            Ders · {isim}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </TableHead>
-                  <TableHead className="px-2 pr-3 text-center text-[11px] sm:px-4 sm:text-sm">Sf</TableHead>
-                  <TableHead className="px-2 pl-3 text-center text-[11px] sm:px-4 sm:text-sm">Cüz</TableHead>
-                  <TableHead className="px-1 text-center text-[11px] sm:px-4 sm:text-sm">Hedef</TableHead>
+                  <TableHead className="px-2 pr-3 text-center text-xs sm:px-4 sm:text-sm">Sf</TableHead>
+                  <TableHead className="px-2 pl-3 text-center text-xs sm:px-4 sm:text-sm">Cüz</TableHead>
+                  <TableHead className="px-1 text-center text-xs sm:px-4 sm:text-sm">Hedef</TableHead>
                   {hocaModu && (
-                    <TableHead className="w-14 px-1 text-right text-[11px] sm:w-24 sm:px-4 sm:text-sm">İşlem</TableHead>
+                    <TableHead className="w-14 px-1 text-right text-xs sm:w-24 sm:px-4 sm:text-sm">İşlem</TableHead>
                   )}
                 </TableRow>
               </TableHeader>
