@@ -487,7 +487,7 @@ function Index() {
         <div className="mb-6 grid grid-cols-2 gap-3">
           <OzetKart etiket="Toplam Talebe" deger={ozet.toplam} />
           <OzetKart
-            etiket="Kıraat"
+            etiket={`Ders (${GUN_UZUN[seciliGun]})`}
             deger={`${ozet.kiraatSayi}/${ozet.toplam}`}
           />
         </div>
