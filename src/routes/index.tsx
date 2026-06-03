@@ -386,10 +386,10 @@ function Index() {
             <GraduationCap className="h-5 w-5 sm:h-7 sm:w-7" />
           </div>
           <div>
-            <h1 className="text-xl font-semibold tracking-tight text-foreground sm:text-5xl">
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-5xl">
               SİEC DESSİE KURSU
             </h1>
-            <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">
+            <p className="mt-1 text-sm text-muted-foreground sm:text-base">
               Talebe Başarı Paneli
             </p>
           </div>
