@@ -312,10 +312,10 @@ function Index() {
   const ozet = useMemo(() => {
     const toplam = talebeler.length;
     const kiraatSayi = talebeler.filter(
-      (t) => getKiraatGunler(t, seciliHafta).length > 0,
+      (t) => getKiraatGunler(t, seciliHafta).includes(seciliGun),
     ).length;
     return { toplam, kiraatSayi };
-  }, [talebeler, seciliHafta]);
+  }, [talebeler, seciliHafta, seciliGun]);
 
   const [topluHedefTaslak, setTopluHedefTaslak] = useState("5");
   const [topluHedefHata, setTopluHedefHata] = useState<string | null>(null);
