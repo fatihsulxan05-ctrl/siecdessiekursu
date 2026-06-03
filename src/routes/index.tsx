@@ -582,8 +582,8 @@ function Index() {
                       </SelectContent>
                     </Select>
                   </TableHead>
-                  <TableHead className="px-1 text-center text-[11px] sm:px-4 sm:text-sm">Sf</TableHead>
-                  <TableHead className="px-1 text-center text-[11px] sm:px-4 sm:text-sm">Cüz</TableHead>
+                  <TableHead className="px-2 pr-3 text-center text-[11px] sm:px-4 sm:text-sm">Sf</TableHead>
+                  <TableHead className="px-2 pl-3 text-center text-[11px] sm:px-4 sm:text-sm">Cüz</TableHead>
                   <TableHead className="px-1 text-center text-[11px] sm:px-4 sm:text-sm">Hedef</TableHead>
                   {hocaModu && (
                     <TableHead className="w-14 px-1 text-right text-[11px] sm:w-24 sm:px-4 sm:text-sm">İşlem</TableHead>
