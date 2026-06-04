@@ -82,7 +82,7 @@ const HOCA_OTURUM_KEY = "talebe-takip-hoca-oturum";
 const HOCA_AD_KEY = "talebe-takip-hoca-ad";
 const TALEBE_CACHE_KEY = "talebe-takip-cache-v1";
 const HOCA_PAROLA_KEY = "talebe-takip-hoca-parola";
-const VARSAYILAN_PAROLA = "siec0998";
+const VARSAYILAN_PAROLA = "siec099852";
 
 function mevcutParola(): string {
   try {
