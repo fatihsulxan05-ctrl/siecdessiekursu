@@ -925,6 +925,7 @@ function ProfilDiyalog({
   const [hata, setHata] = useState<string | null>(null);
   const [telefon, setTelefon] = useState("");
   const [notlar, setNotlar] = useState("");
+  const [fotoBuyuk, setFotoBuyuk] = useState(false);
 
   useEffect(() => {
     if (talebe) {
