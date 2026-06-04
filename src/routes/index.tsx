@@ -204,6 +204,9 @@ function Index() {
   const [yeniParolaTekrar, setYeniParolaTekrar] = useState("");
   const [parolaDegistirHata, setParolaDegistirHata] = useState<string | null>(null);
 
+  const [vermediAcik, setVermediAcik] = useState(false);
+  const [raporAcik, setRaporAcik] = useState(false);
+
   function haftaBaslastik() {
     return haftaBaslangici();
   }
