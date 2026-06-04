@@ -487,12 +487,19 @@ function Index() {
           </CardContent>
         </Card>
 
-        <div className="mb-6 grid grid-cols-2 gap-3">
+        <div className="mb-3 grid grid-cols-2 gap-3">
           <OzetKart etiket="Toplam Talebe" deger={ozet.toplam} />
           <OzetKart
             etiket={`Ders (${GUN_UZUN[seciliGun]})`}
             deger={`${ozet.kiraatSayi}/${ozet.toplam}`}
+            onClick={() => setVermediAcik(true)}
           />
+        </div>
+
+        <div className="mb-6 flex justify-end">
+          <Button size="sm" variant="outline" onClick={() => setRaporAcik(true)}>
+            <CalendarDays className="h-4 w-4" /> Haftanın Raporu
+          </Button>
         </div>
 
         {hocaModu && (
