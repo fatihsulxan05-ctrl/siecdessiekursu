@@ -13,6 +13,8 @@ import { db } from "./firebase";
 
 export type SayfaKaydi = { t: number; sayfa: number };
 
+export type KiraatYonu = "alttan" | "ustten";
+
 export type Talebe = {
   id: string;
   isim: string;
@@ -26,6 +28,7 @@ export type Talebe = {
   telefon?: string;
   dogum?: string;
   notlar?: string;
+  yon?: KiraatYonu;
 };
 
 const COL = "talebeler";
@@ -57,6 +60,7 @@ export function talebeleriDinle(
           telefon: typeof v.telefon === "string" ? v.telefon : undefined,
           dogum: typeof v.dogum === "string" ? v.dogum : undefined,
           notlar: typeof v.notlar === "string" ? v.notlar : undefined,
+          yon: v.yon === "ustten" ? "ustten" : "alttan",
         };
       });
       cb(liste);

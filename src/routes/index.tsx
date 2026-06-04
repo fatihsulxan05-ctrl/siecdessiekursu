@@ -57,6 +57,7 @@ import {
   topluHedefGuncelle,
   type Talebe,
   type SayfaKaydi,
+  type KiraatYonu,
 } from "@/lib/talebeler";
 import { dosyaFotoDataUrl, bashHarfler } from "@/lib/foto";
 import { Textarea } from "@/components/ui/textarea";
@@ -129,11 +130,18 @@ function sayfaOnceFn(t: Talebe, esik: number) {
 function ilerleme(t: Talebe, baslangic: number, bitis: number) {
   const baz = sayfaOnceFn(t, baslangic);
   const son = sayfaOnceFn(t, bitis);
-  return Math.max(0, son - baz);
+  return t.yon === "ustten"
+    ? Math.max(0, baz - son)
+    : Math.max(0, son - baz);
 }
 
 function haftaBazSayfa(t: Talebe, baslangic: number) {
   return sayfaOnceFn(t, baslangic);
+}
+
+function hedefSayfaHesap(t: Talebe, bazSayfa: number, hedef: number) {
+  if (t.yon === "ustten") return Math.max(1, bazSayfa - hedef);
+  return Math.min(604, bazSayfa + hedef);
 }
 
 function haftaEtiket(baslangic: number) {
@@ -300,6 +308,7 @@ function Index() {
       hedefHaftalik: 5,
       gecmis: [{ t: Date.now(), sayfa: 1 }],
       sira: enBuyukSira + 1,
+      yon: "alttan",
     });
   };
 
@@ -634,6 +643,7 @@ function Index() {
                     </TableCell>
                     <TableCell className="px-1 py-2 text-center sm:px-4 sm:py-3">
                       <HedefRozet
+                        talebe={t}
                         yapilan={hafta}
                         hedef={t.hedefHaftalik}
                         bazSayfa={haftaBazSayfa(t, seciliHafta)}
@@ -1228,10 +1238,12 @@ function IlerlemeRozet({ sayfa }: { sayfa: number }) {
 }
 
 function HedefRozet({
+  talebe,
   yapilan,
   hedef,
   bazSayfa,
 }: {
+  talebe: Talebe;
   yapilan: number;
   hedef: number;
   bazSayfa: number;
@@ -1239,7 +1251,7 @@ function HedefRozet({
   if (!hedef || hedef <= 0) {
     return <span className="text-xs text-muted-foreground">—</span>;
   }
-  const hedefSayfa = Math.min(604, bazSayfa + hedef);
+  const hedefSayfa = hedefSayfaHesap(talebe, bazSayfa, hedef);
   const oran = Math.round((yapilan / hedef) * 100);
   let renk = "bg-destructive/10 text-destructive";
   let nokta = "bg-destructive";
@@ -1276,7 +1288,7 @@ function DuzenleDiyalog({
   onKaydet: (p: Partial<Talebe>) => void;
 }) {
   const [isim, setIsim] = useState("");
-  
+  const [yon, setYon] = useState<KiraatYonu>("alttan");
   const [sayfaTaslak, setSayfaTaslak] = useState("1");
   const [sayfaHata, setSayfaHata] = useState<string | null>(null);
   const [hedefTaslak, setHedefTaslak] = useState("5");
@@ -1285,7 +1297,7 @@ function DuzenleDiyalog({
   useEffect(() => {
     if (talebe) {
       setIsim(talebe.isim);
-      
+      setYon(talebe.yon ?? "alttan");
       setSayfaTaslak(String(talebe.sayfa));
       setHedefTaslak(String(talebe.hedefHaftalik ?? 5));
       setSayfaHata(null);
@@ -1335,7 +1347,7 @@ function DuzenleDiyalog({
     if (sayfa === null || hedef === null) return;
     const temizIsim = isim.trim().slice(0, 60);
     if (!temizIsim) return;
-    onKaydet({ isim: temizIsim, sayfa, hedefHaftalik: hedef });
+    onKaydet({ isim: temizIsim, sayfa, hedefHaftalik: hedef, yon });
   };
 
   const cuz = /^\d+$/.test(sayfaTaslak)
@@ -1360,6 +1372,22 @@ function DuzenleDiyalog({
               onChange={(e) => setIsim(e.target.value.slice(0, 60))}
               maxLength={60}
             />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label>Kıraat yönü</Label>
+            <Select value={yon} onValueChange={(v) => setYon(v as KiraatYonu)}>
+              <SelectTrigger className="h-9">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="alttan">Alttan (Sayfa 1 → 604)</SelectItem>
+                <SelectItem value="ustten">Üstten (Sayfa 604 → 1)</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              Hedef hesabı bu yöne göre yapılır.
+            </p>
           </div>
 
           <p className="text-xs text-muted-foreground">
