@@ -965,7 +965,14 @@ function ProfilDiyalog({
 
         <div className="flex flex-col items-center gap-3">
           <div className="relative">
-            <TalebeAvatar talebe={talebe} boyut={120} />
+            <button
+              type="button"
+              onClick={() => talebe.fotoUrl && setFotoBuyuk(true)}
+              className={`block rounded-full ${talebe.fotoUrl ? "cursor-zoom-in" : "cursor-default"}`}
+              title={talebe.fotoUrl ? "Fotoğrafı büyüt" : undefined}
+            >
+              <TalebeAvatar talebe={talebe} boyut={120} />
+            </button>
             {hocaModu && (
               <label
                 className="absolute -bottom-1 -right-1 inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-primary text-primary-foreground shadow ring-2 ring-background hover:opacity-90"
