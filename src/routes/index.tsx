@@ -308,6 +308,7 @@ function Index() {
       hedefHaftalik: 5,
       gecmis: [{ t: Date.now(), sayfa: 1 }],
       sira: enBuyukSira + 1,
+      yon: "alttan",
     });
   };
 
