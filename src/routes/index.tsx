@@ -1288,7 +1288,7 @@ function DuzenleDiyalog({
   onKaydet: (p: Partial<Talebe>) => void;
 }) {
   const [isim, setIsim] = useState("");
-  
+  const [yon, setYon] = useState<KiraatYonu>("alttan");
   const [sayfaTaslak, setSayfaTaslak] = useState("1");
   const [sayfaHata, setSayfaHata] = useState<string | null>(null);
   const [hedefTaslak, setHedefTaslak] = useState("5");
@@ -1297,7 +1297,7 @@ function DuzenleDiyalog({
   useEffect(() => {
     if (talebe) {
       setIsim(talebe.isim);
-      
+      setYon(talebe.yon ?? "alttan");
       setSayfaTaslak(String(talebe.sayfa));
       setHedefTaslak(String(talebe.hedefHaftalik ?? 5));
       setSayfaHata(null);
@@ -1347,7 +1347,7 @@ function DuzenleDiyalog({
     if (sayfa === null || hedef === null) return;
     const temizIsim = isim.trim().slice(0, 60);
     if (!temizIsim) return;
-    onKaydet({ isim: temizIsim, sayfa, hedefHaftalik: hedef });
+    onKaydet({ isim: temizIsim, sayfa, hedefHaftalik: hedef, yon });
   };
 
   const cuz = /^\d+$/.test(sayfaTaslak)
