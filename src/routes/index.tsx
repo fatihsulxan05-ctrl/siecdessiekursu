@@ -1490,3 +1490,140 @@ function ParolaInput({
   );
 }
 
+
+function VermediDiyalog({
+  acik,
+  onClose,
+  gunAdi,
+  talebeler,
+  onTalebe,
+}: {
+  acik: boolean;
+  onClose: () => void;
+  gunAdi: string;
+  talebeler: Talebe[];
+  onTalebe: (t: Talebe) => void;
+}) {
+  return (
+    <Dialog open={acik} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Ders Vermeyenler · {gunAdi}</DialogTitle>
+          <DialogDescription>
+            {talebeler.length} talebe bu gün için işaretli değil.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="max-h-[60vh] overflow-y-auto">
+          {talebeler.length === 0 ? (
+            <p className="py-6 text-center text-sm text-muted-foreground">
+              Bu gün tüm talebeler ders verdi. 🎉
+            </p>
+          ) : (
+            <ul className="divide-y divide-border">
+              {talebeler.map((t) => (
+                <li key={t.id}>
+                  <button
+                    type="button"
+                    onClick={() => onTalebe(t)}
+                    className="flex w-full items-center gap-3 py-2 text-left hover:bg-muted/40"
+                  >
+                    <TalebeAvatar talebe={t} boyut={36} />
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-sm font-medium">{t.isim}</div>
+                      <div className="text-xs text-muted-foreground">
+                        Sayfa {t.sayfa} · {cuzHesapla(t.sayfa)}. cüz
+                      </div>
+                    </div>
+                    <span className="rounded-md border border-destructive/40 bg-destructive/10 px-2 py-0.5 text-[11px] font-semibold text-destructive">
+                      Vermedi
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <DialogFooter>
+          <Button variant="ghost" onClick={onClose}>Kapat</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function RaporDiyalog({
+  acik,
+  onClose,
+  talebeler,
+  haftaBas,
+  haftaEtiketi,
+  onTalebe,
+}: {
+  acik: boolean;
+  onClose: () => void;
+  talebeler: Talebe[];
+  haftaBas: number;
+  haftaEtiketi: string;
+  onTalebe: (t: Talebe) => void;
+}) {
+  const siralanmis = [...talebeler]
+    .map((t) => ({ t, gun: getKiraatGunler(t, haftaBas).length }))
+    .sort((a, b) => b.gun - a.gun);
+  const enIyiler = siralanmis.filter((x) => x.gun >= 4);
+  const ortalar = siralanmis.filter((x) => x.gun === 2 || x.gun === 3);
+  const zayiflar = siralanmis.filter((x) => x.gun <= 1);
+
+  const grup = (
+    baslik: string,
+    renk: string,
+    liste: { t: Talebe; gun: number }[],
+  ) => (
+    <div>
+      <h3 className={`mb-2 text-sm font-semibold ${renk}`}>
+        {baslik} <span className="text-muted-foreground">({liste.length})</span>
+      </h3>
+      {liste.length === 0 ? (
+        <p className="text-xs text-muted-foreground">—</p>
+      ) : (
+        <ul className="divide-y divide-border rounded-md border border-border/60">
+          {liste.map(({ t, gun }) => (
+            <li key={t.id}>
+              <button
+                type="button"
+                onClick={() => onTalebe(t)}
+                className="flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-muted/40"
+              >
+                <TalebeAvatar talebe={t} boyut={32} />
+                <span className="min-w-0 flex-1 truncate text-sm font-medium">
+                  {t.isim}
+                </span>
+                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold tabular-nums text-primary">
+                  {gun}/7 gün
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+
+  return (
+    <Dialog open={acik} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Haftanın Raporu</DialogTitle>
+          <DialogDescription>{haftaEtiketi}</DialogDescription>
+        </DialogHeader>
+        <div className="max-h-[65vh] space-y-4 overflow-y-auto">
+          {grup("🌟 En çok ders verenler (4+ gün)", "text-primary", enIyiler)}
+          {grup("⚖️ Orta seviye (2-3 gün)", "text-amber-600 dark:text-amber-400", ortalar)}
+          {grup("⚠️ Zayıf (0-1 gün)", "text-destructive", zayiflar)}
+        </div>
+        <DialogFooter>
+          <Button variant="ghost" onClick={onClose}>Kapat</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
