@@ -1081,6 +1081,22 @@ function ProfilDiyalog({
           )}
         </DialogFooter>
       </DialogContent>
+
+      {talebe.fotoUrl && (
+        <Dialog open={fotoBuyuk} onOpenChange={(o) => !o && setFotoBuyuk(false)}>
+          <DialogContent className="max-w-[95vw] border-0 bg-transparent p-0 shadow-none sm:max-w-[90vw]">
+            <DialogHeader className="sr-only">
+              <DialogTitle>{talebe.isim} fotoğrafı</DialogTitle>
+              <DialogDescription>Büyütülmüş fotoğraf görünümü.</DialogDescription>
+            </DialogHeader>
+            <img
+              src={talebe.fotoUrl}
+              alt={talebe.isim}
+              className="mx-auto max-h-[85vh] w-auto max-w-full rounded-lg object-contain"
+            />
+          </DialogContent>
+        </Dialog>
+      )}
     </Dialog>
   );
 }
