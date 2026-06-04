@@ -1237,10 +1237,12 @@ function IlerlemeRozet({ sayfa }: { sayfa: number }) {
 }
 
 function HedefRozet({
+  talebe,
   yapilan,
   hedef,
   bazSayfa,
 }: {
+  talebe: Talebe;
   yapilan: number;
   hedef: number;
   bazSayfa: number;
@@ -1248,7 +1250,7 @@ function HedefRozet({
   if (!hedef || hedef <= 0) {
     return <span className="text-xs text-muted-foreground">—</span>;
   }
-  const hedefSayfa = Math.min(604, bazSayfa + hedef);
+  const hedefSayfa = hedefSayfaHesap(talebe, bazSayfa, hedef);
   const oran = Math.round((yapilan / hedef) * 100);
   let renk = "bg-destructive/10 text-destructive";
   let nokta = "bg-destructive";
