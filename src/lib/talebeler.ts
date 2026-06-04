@@ -60,6 +60,7 @@ export function talebeleriDinle(
           telefon: typeof v.telefon === "string" ? v.telefon : undefined,
           dogum: typeof v.dogum === "string" ? v.dogum : undefined,
           notlar: typeof v.notlar === "string" ? v.notlar : undefined,
+          yon: v.yon === "ustten" ? "ustten" : "alttan",
         };
       });
       cb(liste);
