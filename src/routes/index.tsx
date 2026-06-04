@@ -82,7 +82,7 @@ const HOCA_OTURUM_KEY = "talebe-takip-hoca-oturum";
 const HOCA_AD_KEY = "talebe-takip-hoca-ad";
 const TALEBE_CACHE_KEY = "talebe-takip-cache-v1";
 const HOCA_PAROLA_KEY = "talebe-takip-hoca-parola";
-const VARSAYILAN_PAROLA = "siec0998";
+const VARSAYILAN_PAROLA = "siec099852";
 
 function mevcutParola(): string {
   try {
@@ -203,6 +203,9 @@ function Index() {
   const [yeniParola, setYeniParola] = useState("");
   const [yeniParolaTekrar, setYeniParolaTekrar] = useState("");
   const [parolaDegistirHata, setParolaDegistirHata] = useState<string | null>(null);
+
+  const [vermediAcik, setVermediAcik] = useState(false);
+  const [raporAcik, setRaporAcik] = useState(false);
 
   function haftaBaslastik() {
     return haftaBaslangici();
@@ -381,15 +384,15 @@ function Index() {
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-6xl px-2 py-4 sm:px-6 sm:py-12">
-        <header className="mb-5 flex flex-col items-center gap-2 text-center sm:mb-10 sm:gap-4">
-          <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary sm:h-14 sm:w-14">
-            <GraduationCap className="h-5 w-5 sm:h-7 sm:w-7" />
+        <header className="mb-6 flex flex-col items-center gap-3 text-center sm:mb-12 sm:gap-5">
+          <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary sm:h-20 sm:w-20">
+            <GraduationCap className="h-7 w-7 sm:h-10 sm:w-10" />
           </div>
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-5xl">
+            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-6xl">
               SİEC DESSİE KURSU
             </h1>
-            <p className="mt-1 text-sm text-muted-foreground sm:text-base">
+            <p className="mt-2 text-base text-muted-foreground sm:text-xl">
               Talebe Başarı Paneli
             </p>
           </div>
@@ -484,12 +487,19 @@ function Index() {
           </CardContent>
         </Card>
 
-        <div className="mb-6 grid grid-cols-2 gap-3">
+        <div className="mb-3 grid grid-cols-2 gap-3">
           <OzetKart etiket="Toplam Talebe" deger={ozet.toplam} />
           <OzetKart
             etiket={`Ders (${GUN_UZUN[seciliGun]})`}
             deger={`${ozet.kiraatSayi}/${ozet.toplam}`}
+            onClick={() => setVermediAcik(true)}
           />
+        </div>
+
+        <div className="mb-6 flex justify-end">
+          <Button size="sm" variant="outline" onClick={() => setRaporAcik(true)}>
+            <CalendarDays className="h-4 w-4" /> Haftanın Raporu
+          </Button>
         </div>
 
         {hocaModu && (
@@ -701,6 +711,32 @@ function Index() {
         )}
       </div>
 
+      <VermediDiyalog
+        acik={vermediAcik}
+        onClose={() => setVermediAcik(false)}
+        gunAdi={GUN_UZUN[seciliGun]}
+        talebeler={talebeler.filter(
+          (t) => !getKiraatGunler(t, seciliHafta).includes(seciliGun),
+        )}
+        onTalebe={(t) => {
+          setVermediAcik(false);
+          setProfilGoster(t);
+        }}
+      />
+
+      <RaporDiyalog
+        acik={raporAcik}
+        onClose={() => setRaporAcik(false)}
+        talebeler={talebeler}
+        haftaBas={seciliHafta}
+        haftaEtiketi={haftaEtiket(seciliHafta)}
+        onTalebe={(t) => {
+          setRaporAcik(false);
+          setProfilGoster(t);
+        }}
+      />
+
+
       <Dialog
         open={girisAcik}
         onOpenChange={(o) => {
@@ -889,6 +925,7 @@ function ProfilDiyalog({
   const [hata, setHata] = useState<string | null>(null);
   const [telefon, setTelefon] = useState("");
   const [notlar, setNotlar] = useState("");
+  const [fotoBuyuk, setFotoBuyuk] = useState(false);
 
   useEffect(() => {
     if (talebe) {
@@ -928,7 +965,14 @@ function ProfilDiyalog({
 
         <div className="flex flex-col items-center gap-3">
           <div className="relative">
-            <TalebeAvatar talebe={talebe} boyut={120} />
+            <button
+              type="button"
+              onClick={() => talebe.fotoUrl && setFotoBuyuk(true)}
+              className={`block rounded-full ${talebe.fotoUrl ? "cursor-zoom-in" : "cursor-default"}`}
+              title={talebe.fotoUrl ? "Fotoğrafı büyüt" : undefined}
+            >
+              <TalebeAvatar talebe={talebe} boyut={120} />
+            </button>
             {hocaModu && (
               <label
                 className="absolute -bottom-1 -right-1 inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-primary text-primary-foreground shadow ring-2 ring-background hover:opacity-90"
@@ -1037,23 +1081,56 @@ function ProfilDiyalog({
           )}
         </DialogFooter>
       </DialogContent>
+
+      {talebe.fotoUrl && (
+        <Dialog open={fotoBuyuk} onOpenChange={(o) => !o && setFotoBuyuk(false)}>
+          <DialogContent className="max-w-[95vw] border-0 bg-transparent p-0 shadow-none sm:max-w-[90vw]">
+            <DialogHeader className="sr-only">
+              <DialogTitle>{talebe.isim} fotoğrafı</DialogTitle>
+              <DialogDescription>Büyütülmüş fotoğraf görünümü.</DialogDescription>
+            </DialogHeader>
+            <img
+              src={talebe.fotoUrl}
+              alt={talebe.isim}
+              className="mx-auto max-h-[85vh] w-auto max-w-full rounded-lg object-contain"
+            />
+          </DialogContent>
+        </Dialog>
+      )}
     </Dialog>
   );
 }
 
-function OzetKart({ etiket, deger }: { etiket: string; deger: number | string }) {
-  return (
-    <Card className="border-border/60">
-      <CardContent className="px-3 py-3 text-center sm:px-4 sm:py-4">
-        <div className="text-xs uppercase tracking-wider text-muted-foreground">
-          {etiket}
-        </div>
-        <div className="mt-1 text-xl font-semibold text-foreground sm:text-2xl">
-          {deger}
-        </div>
-      </CardContent>
-    </Card>
+function OzetKart({
+  etiket,
+  deger,
+  onClick,
+}: {
+  etiket: string;
+  deger: number | string;
+  onClick?: () => void;
+}) {
+  const icerik = (
+    <CardContent className="px-3 py-3 text-center sm:px-4 sm:py-4">
+      <div className="text-xs uppercase tracking-wider text-muted-foreground">
+        {etiket}
+      </div>
+      <div className="mt-1 text-xl font-semibold text-foreground sm:text-2xl">
+        {deger}
+      </div>
+    </CardContent>
   );
+  if (onClick) {
+    return (
+      <Card
+        className="border-border/60 cursor-pointer transition-colors hover:bg-muted/40 hover:border-primary/40"
+        onClick={onClick}
+      >
+        {icerik}
+      </Card>
+    );
+  }
+  return <Card className="border-border/60">{icerik}</Card>;
 }
 
 function KiraatGunler({
@@ -1437,3 +1514,140 @@ function ParolaInput({
   );
 }
 
+
+function VermediDiyalog({
+  acik,
+  onClose,
+  gunAdi,
+  talebeler,
+  onTalebe,
+}: {
+  acik: boolean;
+  onClose: () => void;
+  gunAdi: string;
+  talebeler: Talebe[];
+  onTalebe: (t: Talebe) => void;
+}) {
+  return (
+    <Dialog open={acik} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Ders Vermeyenler · {gunAdi}</DialogTitle>
+          <DialogDescription>
+            {talebeler.length} talebe bu gün için işaretli değil.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="max-h-[60vh] overflow-y-auto">
+          {talebeler.length === 0 ? (
+            <p className="py-6 text-center text-sm text-muted-foreground">
+              Bu gün tüm talebeler ders verdi. 🎉
+            </p>
+          ) : (
+            <ul className="divide-y divide-border">
+              {talebeler.map((t) => (
+                <li key={t.id}>
+                  <button
+                    type="button"
+                    onClick={() => onTalebe(t)}
+                    className="flex w-full items-center gap-3 py-2 text-left hover:bg-muted/40"
+                  >
+                    <TalebeAvatar talebe={t} boyut={36} />
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-sm font-medium">{t.isim}</div>
+                      <div className="text-xs text-muted-foreground">
+                        Sayfa {t.sayfa} · {cuzHesapla(t.sayfa)}. cüz
+                      </div>
+                    </div>
+                    <span className="rounded-md border border-destructive/40 bg-destructive/10 px-2 py-0.5 text-[11px] font-semibold text-destructive">
+                      Vermedi
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <DialogFooter>
+          <Button variant="ghost" onClick={onClose}>Kapat</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function RaporDiyalog({
+  acik,
+  onClose,
+  talebeler,
+  haftaBas,
+  haftaEtiketi,
+  onTalebe,
+}: {
+  acik: boolean;
+  onClose: () => void;
+  talebeler: Talebe[];
+  haftaBas: number;
+  haftaEtiketi: string;
+  onTalebe: (t: Talebe) => void;
+}) {
+  const siralanmis = [...talebeler]
+    .map((t) => ({ t, gun: getKiraatGunler(t, haftaBas).length }))
+    .sort((a, b) => b.gun - a.gun);
+  const enIyiler = siralanmis.filter((x) => x.gun >= 4);
+  const ortalar = siralanmis.filter((x) => x.gun === 2 || x.gun === 3);
+  const zayiflar = siralanmis.filter((x) => x.gun <= 1);
+
+  const grup = (
+    baslik: string,
+    renk: string,
+    liste: { t: Talebe; gun: number }[],
+  ) => (
+    <div>
+      <h3 className={`mb-2 text-sm font-semibold ${renk}`}>
+        {baslik} <span className="text-muted-foreground">({liste.length})</span>
+      </h3>
+      {liste.length === 0 ? (
+        <p className="text-xs text-muted-foreground">—</p>
+      ) : (
+        <ul className="divide-y divide-border rounded-md border border-border/60">
+          {liste.map(({ t, gun }) => (
+            <li key={t.id}>
+              <button
+                type="button"
+                onClick={() => onTalebe(t)}
+                className="flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-muted/40"
+              >
+                <TalebeAvatar talebe={t} boyut={32} />
+                <span className="min-w-0 flex-1 truncate text-sm font-medium">
+                  {t.isim}
+                </span>
+                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold tabular-nums text-primary">
+                  {gun}/7 gün
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+
+  return (
+    <Dialog open={acik} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Haftanın Raporu</DialogTitle>
+          <DialogDescription>{haftaEtiketi}</DialogDescription>
+        </DialogHeader>
+        <div className="max-h-[65vh] space-y-4 overflow-y-auto">
+          {grup("🌟 En çok ders verenler (4+ gün)", "text-primary", enIyiler)}
+          {grup("⚖️ Orta seviye (2-3 gün)", "text-amber-600 dark:text-amber-400", ortalar)}
+          {grup("⚠️ Zayıf (0-1 gün)", "text-destructive", zayiflar)}
+        </div>
+        <DialogFooter>
+          <Button variant="ghost" onClick={onClose}>Kapat</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
