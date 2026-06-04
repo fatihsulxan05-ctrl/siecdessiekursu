@@ -57,6 +57,7 @@ import {
   topluHedefGuncelle,
   type Talebe,
   type SayfaKaydi,
+  type KiraatYonu,
 } from "@/lib/talebeler";
 import { dosyaFotoDataUrl, bashHarfler } from "@/lib/foto";
 import { Textarea } from "@/components/ui/textarea";
