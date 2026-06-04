@@ -711,6 +711,32 @@ function Index() {
         )}
       </div>
 
+      <VermediDiyalog
+        acik={vermediAcik}
+        onClose={() => setVermediAcik(false)}
+        gunAdi={GUN_UZUN[seciliGun]}
+        talebeler={talebeler.filter(
+          (t) => !getKiraatGunler(t, seciliHafta).includes(seciliGun),
+        )}
+        onTalebe={(t) => {
+          setVermediAcik(false);
+          setProfilGoster(t);
+        }}
+      />
+
+      <RaporDiyalog
+        acik={raporAcik}
+        onClose={() => setRaporAcik(false)}
+        talebeler={talebeler}
+        haftaBas={seciliHafta}
+        haftaEtiketi={haftaEtiket(seciliHafta)}
+        onTalebe={(t) => {
+          setRaporAcik(false);
+          setProfilGoster(t);
+        }}
+      />
+
+
       <Dialog
         open={girisAcik}
         onOpenChange={(o) => {
