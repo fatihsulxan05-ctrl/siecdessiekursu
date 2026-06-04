@@ -1374,6 +1374,22 @@ function DuzenleDiyalog({
             />
           </div>
 
+          <div className="space-y-1.5">
+            <Label>Kıraat yönü</Label>
+            <Select value={yon} onValueChange={(v) => setYon(v as KiraatYonu)}>
+              <SelectTrigger className="h-9">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="alttan">Alttan (Sayfa 1 → 604)</SelectItem>
+                <SelectItem value="ustten">Üstten (Sayfa 604 → 1)</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              Hedef hesabı bu yöne göre yapılır.
+            </p>
+          </div>
+
           <p className="text-xs text-muted-foreground">
             Kıraat günlerini ana tablodaki gün rozetlerinden işaretleyebilirsiniz.
           </p>
