@@ -642,6 +642,7 @@ function Index() {
                     </TableCell>
                     <TableCell className="px-1 py-2 text-center sm:px-4 sm:py-3">
                       <HedefRozet
+                        talebe={t}
                         yapilan={hafta}
                         hedef={t.hedefHaftalik}
                         bazSayfa={haftaBazSayfa(t, seciliHafta)}
