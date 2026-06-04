@@ -1051,19 +1051,36 @@ function ProfilDiyalog({
   );
 }
 
-function OzetKart({ etiket, deger }: { etiket: string; deger: number | string }) {
-  return (
-    <Card className="border-border/60">
-      <CardContent className="px-3 py-3 text-center sm:px-4 sm:py-4">
-        <div className="text-xs uppercase tracking-wider text-muted-foreground">
-          {etiket}
-        </div>
-        <div className="mt-1 text-xl font-semibold text-foreground sm:text-2xl">
-          {deger}
-        </div>
-      </CardContent>
-    </Card>
+function OzetKart({
+  etiket,
+  deger,
+  onClick,
+}: {
+  etiket: string;
+  deger: number | string;
+  onClick?: () => void;
+}) {
+  const icerik = (
+    <CardContent className="px-3 py-3 text-center sm:px-4 sm:py-4">
+      <div className="text-xs uppercase tracking-wider text-muted-foreground">
+        {etiket}
+      </div>
+      <div className="mt-1 text-xl font-semibold text-foreground sm:text-2xl">
+        {deger}
+      </div>
+    </CardContent>
   );
+  if (onClick) {
+    return (
+      <Card
+        className="border-border/60 cursor-pointer transition-colors hover:bg-muted/40 hover:border-primary/40"
+        onClick={onClick}
+      >
+        {icerik}
+      </Card>
+    );
+  }
+  return <Card className="border-border/60">{icerik}</Card>;
 }
 
 function KiraatGunler({
