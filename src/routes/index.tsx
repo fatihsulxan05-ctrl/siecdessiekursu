@@ -130,11 +130,18 @@ function sayfaOnceFn(t: Talebe, esik: number) {
 function ilerleme(t: Talebe, baslangic: number, bitis: number) {
   const baz = sayfaOnceFn(t, baslangic);
   const son = sayfaOnceFn(t, bitis);
-  return Math.max(0, son - baz);
+  return t.yon === "ustten"
+    ? Math.max(0, baz - son)
+    : Math.max(0, son - baz);
 }
 
 function haftaBazSayfa(t: Talebe, baslangic: number) {
   return sayfaOnceFn(t, baslangic);
+}
+
+function hedefSayfaHesap(t: Talebe, bazSayfa: number, hedef: number) {
+  if (t.yon === "ustten") return Math.max(1, bazSayfa - hedef);
+  return Math.min(604, bazSayfa + hedef);
 }
 
 function haftaEtiket(baslangic: number) {
