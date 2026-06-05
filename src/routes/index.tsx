@@ -89,7 +89,7 @@ const HOCA_PAROLA_KEY = "talebe-takip-hoca-parola";
 const VARSAYILAN_PAROLA = "siec099852";
 const DIL_KEY = "talebe-takip-dil";
 
-type Dil = "tr" | "ar";
+type Dil = "tr" | "am";
 const SOZLUK: Record<Dil, Record<string, string>> = {
   tr: {
     baslik: "SİEC DESSİE KURSU",
@@ -102,16 +102,16 @@ const SOZLUK: Record<Dil, Record<string, string>> = {
     haftaRaporu: "Haftanın raporu",
     vermedi: "Vermedi",
   },
-  ar: {
-    baslik: "دورة سيك دسي",
-    altBaslik: "لوحة إنجاز الطلاب",
-    girisYap: "تسجيل الدخول",
-    cikisYap: "خروج",
-    duzenleme: "وضع التحرير",
-    parola: "كلمة المرور",
-    talebeEkle: "إضافة طالب",
-    haftaRaporu: "تقرير الأسبوع",
-    vermedi: "لم يسلّم",
+  am: {
+    baslik: "ሲኤክ ደሴ ኮርስ",
+    altBaslik: "የተማሪ ስኬት ፓነል",
+    girisYap: "ግባ",
+    cikisYap: "ውጣ",
+    duzenleme: "የማስተካከያ ሁነታ",
+    parola: "የይለፍ ቃል",
+    talebeEkle: "ተማሪ ጨምር",
+    haftaRaporu: "የሳምንቱ ሪፖርት",
+    vermedi: "አላስረከበም",
   },
 };
 
