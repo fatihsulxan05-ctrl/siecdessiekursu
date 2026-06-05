@@ -694,7 +694,11 @@ function Index() {
                       />
                     </TableCell>
                     <TableCell className="px-2 pr-3 py-2 text-center text-xs tabular-nums sm:px-4 sm:py-3 sm:text-sm">
-                      {t.sayfa}
+                      <SayfaEditor
+                        talebe={t}
+                        duzenlenebilir={hocaModu}
+                        onKaydet={(yeni) => guncelle(t.id, { sayfa: yeni })}
+                      />
                     </TableCell>
                     <TableCell className="px-2 pl-3 py-2 text-center text-xs tabular-nums text-muted-foreground sm:px-4 sm:py-3 sm:text-sm">
                       {cuzHesapla(t.sayfa)}
