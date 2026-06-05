@@ -87,6 +87,33 @@ const HOCA_AD_KEY = "talebe-takip-hoca-ad";
 const TALEBE_CACHE_KEY = "talebe-takip-cache-v1";
 const HOCA_PAROLA_KEY = "talebe-takip-hoca-parola";
 const VARSAYILAN_PAROLA = "siec099852";
+const DIL_KEY = "talebe-takip-dil";
+
+type Dil = "tr" | "ar";
+const SOZLUK: Record<Dil, Record<string, string>> = {
+  tr: {
+    baslik: "SİEC DESSİE KURSU",
+    altBaslik: "Talebe Başarı Paneli",
+    girisYap: "Giriş yap",
+    cikisYap: "Çıkış",
+    duzenleme: "Düzenleme modu",
+    parola: "Parola",
+    talebeEkle: "Talebe Ekle",
+    haftaRaporu: "Haftanın raporu",
+    vermedi: "Vermedi",
+  },
+  ar: {
+    baslik: "دورة سيك دسي",
+    altBaslik: "لوحة إنجاز الطلاب",
+    girisYap: "تسجيل الدخول",
+    cikisYap: "خروج",
+    duzenleme: "وضع التحرير",
+    parola: "كلمة المرور",
+    talebeEkle: "إضافة طالب",
+    haftaRaporu: "تقرير الأسبوع",
+    vermedi: "لم يسلّم",
+  },
+};
 
 function mevcutParola(): string {
   try {
