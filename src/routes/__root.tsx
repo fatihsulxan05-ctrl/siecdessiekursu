@@ -82,6 +82,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "Talebe kıraat ve Kur'an-ı Kerim ilerleme takibi." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "SİEC DESSİE KURSU — Talebe Paneli" },
+      { name: "twitter:description", content: "Talebe kıraat ve Kur'an-ı Kerim ilerleme takibi." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/419ac2b7-447c-4b99-8919-b7f8443c2188/id-preview-1c389b63--705963c1-7213-4286-88f1-d94c89c4fd99.lovable.app-1780657918617.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/419ac2b7-447c-4b99-8919-b7f8443c2188/id-preview-1c389b63--705963c1-7213-4286-88f1-d94c89c4fd99.lovable.app-1780657918617.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
