@@ -1741,3 +1741,119 @@ function RaporDiyalog({
     </Dialog>
   );
 }
+
+function SayfaEditor({
+  talebe,
+  duzenlenebilir,
+  onKaydet,
+}: {
+  talebe: Talebe;
+  duzenlenebilir: boolean;
+  onKaydet: (sayfa: number) => void;
+}) {
+  const [acik, setAcik] = useState(false);
+  const [taslak, setTaslak] = useState<number>(talebe.sayfa);
+
+  useEffect(() => {
+    if (acik) setTaslak(talebe.sayfa);
+  }, [acik, talebe.sayfa]);
+
+  const clamp = (n: number) => Math.max(1, Math.min(604, Math.round(n)));
+  const adim = (n: number) => setTaslak((p) => clamp(p + n));
+
+  if (!duzenlenebilir) {
+    return <span>{talebe.sayfa}</span>;
+  }
+
+  return (
+    <Popover open={acik} onOpenChange={setAcik}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="rounded-md px-2 py-1 font-medium hover:bg-muted/60"
+          title="Sayfayı düzenle"
+        >
+          {talebe.sayfa}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-56 p-3" align="center">
+        <div className="space-y-3 text-center">
+          <div className="text-xs text-muted-foreground">
+            {talebe.isim} — Sayfa
+          </div>
+          <div className="flex items-center justify-center gap-2">
+            <Button
+              size="icon"
+              variant="outline"
+              className="h-9 w-9"
+              onClick={() => adim(-10)}
+              title="-10"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              size="icon"
+              variant="outline"
+              className="h-9 w-9"
+              onClick={() => adim(-1)}
+              title="-1"
+            >
+              <Minus className="h-4 w-4" />
+            </Button>
+            <Input
+              type="number"
+              inputMode="numeric"
+              min={1}
+              max={604}
+              value={taslak}
+              onChange={(e) => {
+                const v = Number(e.target.value);
+                if (Number.isFinite(v)) setTaslak(clamp(v));
+              }}
+              onWheel={(e) => {
+                e.preventDefault();
+                adim(e.deltaY > 0 ? -1 : 1);
+              }}
+              className="h-9 w-16 text-center text-base tabular-nums"
+            />
+            <Button
+              size="icon"
+              variant="outline"
+              className="h-9 w-9"
+              onClick={() => adim(1)}
+              title="+1"
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+            <Button
+              size="icon"
+              variant="outline"
+              className="h-9 w-9"
+              onClick={() => adim(10)}
+              title="+10"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+          <div className="text-xs text-muted-foreground">
+            {cuzHesapla(taslak)}. cüz
+          </div>
+          <div className="flex justify-center gap-2">
+            <Button size="sm" variant="ghost" onClick={() => setAcik(false)}>
+              İptal
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => {
+                onKaydet(clamp(taslak));
+                setAcik(false);
+              }}
+            >
+              Kaydet
+            </Button>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
