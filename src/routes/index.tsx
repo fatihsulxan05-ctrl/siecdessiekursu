@@ -48,7 +48,10 @@ import {
   User as UserIcon,
   Eye,
   EyeOff,
+  Languages,
+  Minus,
 } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   talebeleriDinle,
   talebeEkle,
@@ -84,6 +87,33 @@ const HOCA_AD_KEY = "talebe-takip-hoca-ad";
 const TALEBE_CACHE_KEY = "talebe-takip-cache-v1";
 const HOCA_PAROLA_KEY = "talebe-takip-hoca-parola";
 const VARSAYILAN_PAROLA = "siec099852";
+const DIL_KEY = "talebe-takip-dil";
+
+type Dil = "tr" | "ar";
+const SOZLUK: Record<Dil, Record<string, string>> = {
+  tr: {
+    baslik: "SİEC DESSİE KURSU",
+    altBaslik: "Talebe Başarı Paneli",
+    girisYap: "Giriş yap",
+    cikisYap: "Çıkış",
+    duzenleme: "Düzenleme modu",
+    parola: "Parola",
+    talebeEkle: "Talebe Ekle",
+    haftaRaporu: "Haftanın raporu",
+    vermedi: "Vermedi",
+  },
+  ar: {
+    baslik: "دورة سيك دسي",
+    altBaslik: "لوحة إنجاز الطلاب",
+    girisYap: "تسجيل الدخول",
+    cikisYap: "خروج",
+    duzenleme: "وضع التحرير",
+    parola: "كلمة المرور",
+    talebeEkle: "إضافة طالب",
+    haftaRaporu: "تقرير الأسبوع",
+    vermedi: "لم يسلّم",
+  },
+};
 
 function mevcutParola(): string {
   try {
@@ -214,6 +244,24 @@ function Index() {
 
   const [vermediAcik, setVermediAcik] = useState(false);
   const [raporAcik, setRaporAcik] = useState(false);
+
+  const [dil, setDil] = useState<Dil>("tr");
+  useEffect(() => {
+    try {
+      const d = localStorage.getItem(DIL_KEY);
+      if (d === "ar" || d === "tr") setDil(d);
+    } catch {}
+  }, []);
+  useEffect(() => {
+    try {
+      localStorage.setItem(DIL_KEY, dil);
+    } catch {}
+    if (typeof document !== "undefined") {
+      document.documentElement.lang = dil === "ar" ? "ar" : "tr";
+      document.documentElement.dir = dil === "ar" ? "rtl" : "ltr";
+    }
+  }, [dil]);
+  const tr = (k: keyof typeof SOZLUK.tr) => SOZLUK[dil][k] ?? SOZLUK.tr[k];
 
   function haftaBaslastik() {
     return haftaBaslangici();
@@ -393,16 +441,26 @@ function Index() {
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-6xl px-2 py-4 sm:px-6 sm:py-12">
-        <header className="mb-6 flex flex-col items-center gap-3 text-center sm:mb-12 sm:gap-5">
+        <header className="relative mb-6 flex flex-col items-center gap-3 text-center sm:mb-12 sm:gap-5">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setDil(dil === "tr" ? "ar" : "tr")}
+            className="absolute right-0 top-0 h-8 gap-1.5 px-2 text-xs"
+            title={dil === "tr" ? "العربية" : "Türkçe"}
+          >
+            <Languages className="h-3.5 w-3.5" />
+            {dil === "tr" ? "العربية" : "Türkçe"}
+          </Button>
           <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary sm:h-20 sm:w-20">
             <GraduationCap className="h-7 w-7 sm:h-10 sm:w-10" />
           </div>
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-6xl">
-              SİEC DESSİE KURSU
+              {tr("baslik")}
             </h1>
             <p className="mt-2 text-base text-muted-foreground sm:text-xl">
-              Talebe Başarı Paneli
+              {tr("altBaslik")}
             </p>
           </div>
         </header>
@@ -636,7 +694,11 @@ function Index() {
                       />
                     </TableCell>
                     <TableCell className="px-2 pr-3 py-2 text-center text-xs tabular-nums sm:px-4 sm:py-3 sm:text-sm">
-                      {t.sayfa}
+                      <SayfaEditor
+                        talebe={t}
+                        duzenlenebilir={hocaModu}
+                        onKaydet={(yeni) => guncelle(t.id, { sayfa: yeni })}
+                      />
                     </TableCell>
                     <TableCell className="px-2 pl-3 py-2 text-center text-xs tabular-nums text-muted-foreground sm:px-4 sm:py-3 sm:text-sm">
                       {cuzHesapla(t.sayfa)}
@@ -1079,8 +1141,8 @@ function ProfilDiyalog({
               <Button
                 onClick={() => {
                   onNotKaydet(talebe, {
-                    telefon: telefon.trim() || undefined,
-                    notlar: notlar.trim() || undefined,
+                    telefon: telefon.trim(),
+                    notlar: notlar.trim(),
                   });
                   onClose();
                 }}
@@ -1376,7 +1438,22 @@ function DuzenleDiyalog({
 
           <div className="space-y-1.5">
             <Label>Kıraat yönü</Label>
-            <Select value={yon} onValueChange={(v) => setYon(v as KiraatYonu)}>
+            <Select
+              value={yon}
+              onValueChange={(v) => {
+                const yeniYon = v as KiraatYonu;
+                setYon(yeniYon);
+                // Yön değişince sayfa varsayılanını mantıklı uca getir
+                const mevcutSayfa = Number(sayfaTaslak);
+                if (yeniYon === "ustten" && (mevcutSayfa === 1 || !Number.isFinite(mevcutSayfa))) {
+                  setSayfaTaslak("604");
+                  setSayfaHata(null);
+                } else if (yeniYon === "alttan" && mevcutSayfa === 604) {
+                  setSayfaTaslak("1");
+                  setSayfaHata(null);
+                }
+              }}
+            >
               <SelectTrigger className="h-9">
                 <SelectValue />
               </SelectTrigger>
@@ -1677,5 +1754,121 @@ function RaporDiyalog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function SayfaEditor({
+  talebe,
+  duzenlenebilir,
+  onKaydet,
+}: {
+  talebe: Talebe;
+  duzenlenebilir: boolean;
+  onKaydet: (sayfa: number) => void;
+}) {
+  const [acik, setAcik] = useState(false);
+  const [taslak, setTaslak] = useState<number>(talebe.sayfa);
+
+  useEffect(() => {
+    if (acik) setTaslak(talebe.sayfa);
+  }, [acik, talebe.sayfa]);
+
+  const clamp = (n: number) => Math.max(1, Math.min(604, Math.round(n)));
+  const adim = (n: number) => setTaslak((p) => clamp(p + n));
+
+  if (!duzenlenebilir) {
+    return <span>{talebe.sayfa}</span>;
+  }
+
+  return (
+    <Popover open={acik} onOpenChange={setAcik}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="rounded-md px-2 py-1 font-medium hover:bg-muted/60"
+          title="Sayfayı düzenle"
+        >
+          {talebe.sayfa}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-56 p-3" align="center">
+        <div className="space-y-3 text-center">
+          <div className="text-xs text-muted-foreground">
+            {talebe.isim} — Sayfa
+          </div>
+          <div className="flex items-center justify-center gap-2">
+            <Button
+              size="icon"
+              variant="outline"
+              className="h-9 w-9"
+              onClick={() => adim(-10)}
+              title="-10"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              size="icon"
+              variant="outline"
+              className="h-9 w-9"
+              onClick={() => adim(-1)}
+              title="-1"
+            >
+              <Minus className="h-4 w-4" />
+            </Button>
+            <Input
+              type="number"
+              inputMode="numeric"
+              min={1}
+              max={604}
+              value={taslak}
+              onChange={(e) => {
+                const v = Number(e.target.value);
+                if (Number.isFinite(v)) setTaslak(clamp(v));
+              }}
+              onWheel={(e) => {
+                e.preventDefault();
+                adim(e.deltaY > 0 ? -1 : 1);
+              }}
+              className="h-9 w-16 text-center text-base tabular-nums"
+            />
+            <Button
+              size="icon"
+              variant="outline"
+              className="h-9 w-9"
+              onClick={() => adim(1)}
+              title="+1"
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+            <Button
+              size="icon"
+              variant="outline"
+              className="h-9 w-9"
+              onClick={() => adim(10)}
+              title="+10"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+          <div className="text-xs text-muted-foreground">
+            {cuzHesapla(taslak)}. cüz
+          </div>
+          <div className="flex justify-center gap-2">
+            <Button size="sm" variant="ghost" onClick={() => setAcik(false)}>
+              İptal
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => {
+                onKaydet(clamp(taslak));
+                setAcik(false);
+              }}
+            >
+              Kaydet
+            </Button>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }
