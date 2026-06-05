@@ -1438,7 +1438,22 @@ function DuzenleDiyalog({
 
           <div className="space-y-1.5">
             <Label>Kıraat yönü</Label>
-            <Select value={yon} onValueChange={(v) => setYon(v as KiraatYonu)}>
+            <Select
+              value={yon}
+              onValueChange={(v) => {
+                const yeniYon = v as KiraatYonu;
+                setYon(yeniYon);
+                // Yön değişince sayfa varsayılanını mantıklı uca getir
+                const mevcutSayfa = Number(sayfaTaslak);
+                if (yeniYon === "ustten" && (mevcutSayfa === 1 || !Number.isFinite(mevcutSayfa))) {
+                  setSayfaTaslak("604");
+                  setSayfaHata(null);
+                } else if (yeniYon === "alttan" && mevcutSayfa === 604) {
+                  setSayfaTaslak("1");
+                  setSayfaHata(null);
+                }
+              }}
+            >
               <SelectTrigger className="h-9">
                 <SelectValue />
               </SelectTrigger>
