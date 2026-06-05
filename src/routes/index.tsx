@@ -245,6 +245,24 @@ function Index() {
   const [vermediAcik, setVermediAcik] = useState(false);
   const [raporAcik, setRaporAcik] = useState(false);
 
+  const [dil, setDil] = useState<Dil>("tr");
+  useEffect(() => {
+    try {
+      const d = localStorage.getItem(DIL_KEY);
+      if (d === "ar" || d === "tr") setDil(d);
+    } catch {}
+  }, []);
+  useEffect(() => {
+    try {
+      localStorage.setItem(DIL_KEY, dil);
+    } catch {}
+    if (typeof document !== "undefined") {
+      document.documentElement.lang = dil === "ar" ? "ar" : "tr";
+      document.documentElement.dir = dil === "ar" ? "rtl" : "ltr";
+    }
+  }, [dil]);
+  const tr = (k: keyof typeof SOZLUK.tr) => SOZLUK[dil][k] ?? SOZLUK.tr[k];
+
   function haftaBaslastik() {
     return haftaBaslangici();
   }
