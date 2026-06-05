@@ -249,7 +249,7 @@ function Index() {
   useEffect(() => {
     try {
       const d = localStorage.getItem(DIL_KEY);
-      if (d === "ar" || d === "tr") setDil(d);
+      if (d === "am" || d === "tr") setDil(d);
     } catch {}
   }, []);
   useEffect(() => {
@@ -257,8 +257,8 @@ function Index() {
       localStorage.setItem(DIL_KEY, dil);
     } catch {}
     if (typeof document !== "undefined") {
-      document.documentElement.lang = dil === "ar" ? "ar" : "tr";
-      document.documentElement.dir = dil === "ar" ? "rtl" : "ltr";
+      document.documentElement.lang = dil === "am" ? "am" : "tr";
+      document.documentElement.dir = "ltr";
     }
   }, [dil]);
   const tr = (k: keyof typeof SOZLUK.tr) => SOZLUK[dil][k] ?? SOZLUK.tr[k];
