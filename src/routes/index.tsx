@@ -89,7 +89,7 @@ const HOCA_PAROLA_KEY = "talebe-takip-hoca-parola";
 const VARSAYILAN_PAROLA = "siec099852";
 const DIL_KEY = "talebe-takip-dil";
 
-type Dil = "tr" | "ar";
+type Dil = "tr" | "am";
 const SOZLUK: Record<Dil, Record<string, string>> = {
   tr: {
     baslik: "SİEC DESSİE KURSU",
@@ -102,16 +102,16 @@ const SOZLUK: Record<Dil, Record<string, string>> = {
     haftaRaporu: "Haftanın raporu",
     vermedi: "Vermedi",
   },
-  ar: {
-    baslik: "دورة سيك دسي",
-    altBaslik: "لوحة إنجاز الطلاب",
-    girisYap: "تسجيل الدخول",
-    cikisYap: "خروج",
-    duzenleme: "وضع التحرير",
-    parola: "كلمة المرور",
-    talebeEkle: "إضافة طالب",
-    haftaRaporu: "تقرير الأسبوع",
-    vermedi: "لم يسلّم",
+  am: {
+    baslik: "ሲኤክ ደሴ ኮርስ",
+    altBaslik: "የተማሪ ስኬት ፓነል",
+    girisYap: "ግባ",
+    cikisYap: "ውጣ",
+    duzenleme: "የማስተካከያ ሁነታ",
+    parola: "የይለፍ ቃል",
+    talebeEkle: "ተማሪ ጨምር",
+    haftaRaporu: "የሳምንቱ ሪፖርት",
+    vermedi: "አላስረከበም",
   },
 };
 
@@ -249,7 +249,7 @@ function Index() {
   useEffect(() => {
     try {
       const d = localStorage.getItem(DIL_KEY);
-      if (d === "ar" || d === "tr") setDil(d);
+      if (d === "am" || d === "tr") setDil(d);
     } catch {}
   }, []);
   useEffect(() => {
@@ -257,8 +257,8 @@ function Index() {
       localStorage.setItem(DIL_KEY, dil);
     } catch {}
     if (typeof document !== "undefined") {
-      document.documentElement.lang = dil === "ar" ? "ar" : "tr";
-      document.documentElement.dir = dil === "ar" ? "rtl" : "ltr";
+      document.documentElement.lang = dil === "am" ? "am" : "tr";
+      document.documentElement.dir = "ltr";
     }
   }, [dil]);
   const tr = (k: keyof typeof SOZLUK.tr) => SOZLUK[dil][k] ?? SOZLUK.tr[k];
@@ -445,12 +445,12 @@ function Index() {
           <Button
             size="sm"
             variant="outline"
-            onClick={() => setDil(dil === "tr" ? "ar" : "tr")}
+            onClick={() => setDil(dil === "tr" ? "am" : "tr")}
             className="absolute right-0 top-0 h-8 gap-1.5 px-2 text-xs"
-            title={dil === "tr" ? "العربية" : "Türkçe"}
+            title={dil === "tr" ? "አማርኛ" : "Türkçe"}
           >
             <Languages className="h-3.5 w-3.5" />
-            {dil === "tr" ? "العربية" : "Türkçe"}
+            {dil === "tr" ? "አማርኛ" : "Türkçe"}
           </Button>
           <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary sm:h-20 sm:w-20">
             <GraduationCap className="h-7 w-7 sm:h-10 sm:w-10" />
