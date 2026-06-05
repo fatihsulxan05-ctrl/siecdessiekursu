@@ -441,16 +441,26 @@ function Index() {
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-6xl px-2 py-4 sm:px-6 sm:py-12">
-        <header className="mb-6 flex flex-col items-center gap-3 text-center sm:mb-12 sm:gap-5">
+        <header className="relative mb-6 flex flex-col items-center gap-3 text-center sm:mb-12 sm:gap-5">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setDil(dil === "tr" ? "ar" : "tr")}
+            className="absolute right-0 top-0 h-8 gap-1.5 px-2 text-xs"
+            title={dil === "tr" ? "العربية" : "Türkçe"}
+          >
+            <Languages className="h-3.5 w-3.5" />
+            {dil === "tr" ? "العربية" : "Türkçe"}
+          </Button>
           <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary sm:h-20 sm:w-20">
             <GraduationCap className="h-7 w-7 sm:h-10 sm:w-10" />
           </div>
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-6xl">
-              SİEC DESSİE KURSU
+              {tr("baslik")}
             </h1>
             <p className="mt-2 text-base text-muted-foreground sm:text-xl">
-              Talebe Başarı Paneli
+              {tr("altBaslik")}
             </p>
           </div>
         </header>
