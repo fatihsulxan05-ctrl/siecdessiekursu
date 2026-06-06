@@ -490,14 +490,14 @@ function Index() {
   const haftaFarki = Math.round((seciliHafta - buHafta) / HAFTA_MS);
   const haftaBasligi =
     haftaFarki === 0
-      ? "Bu hafta"
+      ? tr("buHafta")
       : haftaFarki === -1
-        ? "Geçen hafta"
+        ? tr("gecenHafta")
         : haftaFarki === 1
-          ? "Gelecek hafta"
+          ? tr("gelecekHafta")
           : haftaFarki < 0
-            ? `${-haftaFarki} hafta önce`
-            : `${haftaFarki} hafta sonra`;
+            ? `${-haftaFarki} ${tr("haftaOnce")}`
+            : `${haftaFarki} ${tr("haftaSonra")}`;
 
   // Yerel UI tercihleri (hoca adı + oturum) localStorage'da kalır
   useEffect(() => {
@@ -600,12 +600,12 @@ function Index() {
   const topluHedefUygula = () => {
     const d = topluHedefTaslak.trim();
     if (!/^\d+$/.test(d)) {
-      setTopluHedefHata("Yalnızca rakam giriniz");
+      setTopluHedefHata(tr("yalnizcaRakam"));
       return;
     }
     const n = Number(d);
     if (n < 0 || n > 200) {
-      setTopluHedefHata("0 ile 200 arasında olmalı");
+      setTopluHedefHata(tr("aralikHata"));
       return;
     }
     setTopluHedefHata(null);
@@ -623,7 +623,7 @@ function Index() {
       setParolaTaslak("");
       setParolaHata(null);
     } else {
-      setParolaHata("Parola hatalı");
+      setParolaHata(tr("parolaHatali"));
     }
   };
 
@@ -634,15 +634,15 @@ function Index() {
 
   const parolaDegistir = () => {
     if (eskiParola !== mevcutParola()) {
-      setParolaDegistirHata("Mevcut parola hatalı");
+      setParolaDegistirHata(tr("mevcutParolaHatali"));
       return;
     }
     if (yeniParola.length < 3) {
-      setParolaDegistirHata("Yeni parola en az 3 karakter olmalı");
+      setParolaDegistirHata(tr("yeniParolaKisa"));
       return;
     }
     if (yeniParola !== yeniParolaTekrar) {
-      setParolaDegistirHata("Yeni parolalar eşleşmiyor");
+      setParolaDegistirHata(tr("yeniParolaUyumsuz"));
       return;
     }
     try {
@@ -664,10 +664,10 @@ function Index() {
             variant="outline"
             onClick={() => setDil(dil === "tr" ? "am" : "tr")}
             className="absolute right-0 top-0 h-8 gap-1.5 px-2 text-xs"
-            title={dil === "tr" ? "አማርኛ" : "Türkçe"}
+            title={tr("digerDil")}
           >
             <Languages className="h-3.5 w-3.5" />
-            {dil === "tr" ? "አማርኛ" : "Türkçe"}
+            {tr("digerDil")}
           </Button>
           <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary sm:h-20 sm:w-20">
             <GraduationCap className="h-7 w-7 sm:h-10 sm:w-10" />
@@ -686,7 +686,7 @@ function Index() {
           <CardContent className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs uppercase tracking-wider text-muted-foreground">
-                Hocaefendi
+                {tr("hocaefendi")}
               </span>
               {hocaModu && hocaDuzenle ? (
                 <>
@@ -739,7 +739,7 @@ function Index() {
               {hocaModu ? (
                 <>
                   <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-                    Düzenleme modu
+                    {tr("duzenlemeModu")}
                   </span>
               <Button
                     size="sm"
@@ -752,10 +752,10 @@ function Index() {
                       setParolaDegistirAcik(true);
                     }}
                   >
-                    Parola
+                    {tr("parola")}
                   </Button>
                   <Button size="sm" variant="outline" onClick={cikisYap}>
-                    <LogOut className="h-4 w-4" /> Çıkış
+                    <LogOut className="h-4 w-4" /> {tr("cikisYap")}
                   </Button>
                 </>
               ) : (
@@ -764,7 +764,7 @@ function Index() {
                   variant="outline"
                   onClick={() => setGirisAcik(true)}
                 >
-                  <Lock className="h-4 w-4" /> Hocaefendi Girişi
+                  <Lock className="h-4 w-4" /> {tr("hocaefendiGirisi")}
                 </Button>
               )}
             </div>
@@ -772,9 +772,9 @@ function Index() {
         </Card>
 
         <div className="mb-3 grid grid-cols-2 gap-3">
-          <OzetKart etiket="Toplam Talebe" deger={ozet.toplam} />
+          <OzetKart etiket={tr("toplamTalebe")} deger={ozet.toplam} />
           <OzetKart
-            etiket={`Ders (${GUN_UZUN[seciliGun]})`}
+            etiket={`${tr("ders")} (${tr("haftaGunUzun")[seciliGun]})`}
             deger={`${ozet.kiraatSayi}/${ozet.toplam}`}
             onClick={() => setVermediAcik(true)}
           />
@@ -782,14 +782,14 @@ function Index() {
 
         <div className="mb-6 flex justify-end">
           <Button size="sm" variant="outline" onClick={() => setRaporAcik(true)}>
-            <CalendarDays className="h-4 w-4" /> Haftanın Raporu
+            <CalendarDays className="h-4 w-4" /> {tr("haftaninRaporu")}
           </Button>
         </div>
 
         {hocaModu && (
           <div className="mb-3 flex flex-wrap items-center gap-2 rounded-md border border-border/60 bg-secondary/30 px-3 py-2">
             <span className="text-xs uppercase tracking-wider text-muted-foreground">
-              Toplu hedef
+              {tr("topluHedef")}
             </span>
             <Input
               type="number"
@@ -804,9 +804,9 @@ function Index() {
               className="h-8 w-24"
               aria-invalid={topluHedefHata ? true : undefined}
             />
-            <span className="text-xs text-muted-foreground">sf / hafta</span>
+            <span className="text-xs text-muted-foreground">{tr("sfHafta")}</span>
             <Button size="sm" onClick={topluHedefUygula}>
-              Tümüne uygula
+              {tr("tumuneUygula")}
             </Button>
             {topluHedefHata && (
               <span className="text-xs text-destructive">{topluHedefHata}</span>
@@ -829,7 +829,7 @@ function Index() {
               variant="ghost"
               className="h-8 w-8"
               onClick={() => setSeciliHafta((h) => h - HAFTA_MS)}
-              aria-label="Önceki hafta"
+              aria-label={tr("oncekiHafta")}
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
@@ -839,14 +839,14 @@ function Index() {
               onClick={() => setSeciliHafta(haftaBaslangici())}
               disabled={haftaFarki === 0}
             >
-              Bu hafta
+              {tr("buHafta")}
             </Button>
             <Button
               size="icon"
               variant="ghost"
               className="h-8 w-8"
               onClick={() => setSeciliHafta((h) => h + HAFTA_MS)}
-              aria-label="Sonraki hafta"
+              aria-label={tr("sonrakiHafta")}
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
@@ -859,7 +859,7 @@ function Index() {
               <TableHeader>
                 <TableRow className="bg-muted/40">
                   <TableHead className="w-8 px-1 text-center text-xs sm:w-12 sm:px-4">#</TableHead>
-                  <TableHead className="px-1.5 text-sm sm:px-4">Talebe</TableHead>
+                  <TableHead className="px-1.5 text-sm sm:px-4">{tr("talebe")}</TableHead>
                   <TableHead className="px-1 text-center sm:px-4">
                     <Select
                       value={String(seciliGun)}
@@ -869,19 +869,19 @@ function Index() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {GUN_UZUN.map((isim, i) => (
+                        {tr("haftaGunUzun").map((isim, i) => (
                           <SelectItem key={i} value={String(i)} className="text-sm">
-                            Ders · {isim}
+                            {tr("ders")} · {isim}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </TableHead>
-                  <TableHead className="px-2 pr-3 text-center text-xs sm:px-4 sm:text-sm">Sf</TableHead>
-                  <TableHead className="px-2 pl-3 text-center text-xs sm:px-4 sm:text-sm">Cüz</TableHead>
-                  <TableHead className="px-1 text-center text-xs sm:px-4 sm:text-sm">Hedef</TableHead>
+                  <TableHead className="px-2 pr-3 text-center text-xs sm:px-4 sm:text-sm">{tr("sf")}</TableHead>
+                  <TableHead className="px-2 pl-3 text-center text-xs sm:px-4 sm:text-sm">{tr("cuz")}</TableHead>
+                  <TableHead className="px-1 text-center text-xs sm:px-4 sm:text-sm">{tr("hedef")}</TableHead>
                   {hocaModu && (
-                    <TableHead className="w-14 px-1 text-right text-xs sm:w-24 sm:px-4 sm:text-sm">İşlem</TableHead>
+                    <TableHead className="w-14 px-1 text-right text-xs sm:w-24 sm:px-4 sm:text-sm">{tr("islem")}</TableHead>
                   )}
                 </TableRow>
               </TableHeader>
@@ -961,7 +961,7 @@ function Index() {
                     >
                       <span className="inline-flex items-center gap-2">
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        Veriler yükleniyor…
+                        {tr("verilerYukleniyor")}
                       </span>
                     </TableCell>
                   </TableRow>
@@ -972,7 +972,7 @@ function Index() {
                       colSpan={hocaModu ? 8 : 7}
                       className="py-10 text-center text-sm text-destructive"
                     >
-                      Bağlantı hatası: {yuklemeHata}
+                      {tr("baglantiHatasi")}: {yuklemeHata}
                     </TableCell>
                   </TableRow>
                 )}
@@ -982,7 +982,7 @@ function Index() {
                       colSpan={hocaModu ? 8 : 7}
                       className="py-10 text-center text-sm text-muted-foreground"
                     >
-                      Henüz talebe yok.
+                      {tr("henuzTalebeYok")}
                     </TableCell>
                   </TableRow>
                 )}
@@ -994,7 +994,7 @@ function Index() {
         {hocaModu && (
           <div className="mt-4 flex justify-end">
             <Button size="sm" onClick={ekle}>
-              <Plus className="h-4 w-4" /> Talebe Ekle
+              <Plus className="h-4 w-4" /> {tr("talebeEkle")}
             </Button>
           </div>
         )}
@@ -1003,7 +1003,7 @@ function Index() {
       <VermediDiyalog
         acik={vermediAcik}
         onClose={() => setVermediAcik(false)}
-        gunAdi={GUN_UZUN[seciliGun]}
+        gunAdi={tr("haftaGunUzun")[seciliGun]}
         talebeler={talebeler.filter(
           (t) => !getKiraatGunler(t, seciliHafta).includes(seciliGun),
         )}
@@ -1038,13 +1038,13 @@ function Index() {
       >
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle>Hocaefendi Girişi</DialogTitle>
+            <DialogTitle>{tr("hocaefendiGirisi")}</DialogTitle>
             <DialogDescription>
-              Düzenleme yapabilmek için parola giriniz.
+              {tr("parolaGiriniz")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-2">
-            <Label>Parola</Label>
+            <Label>{tr("parola")}</Label>
             <ParolaInput
               value={parolaTaslak}
               onChange={(v) => {
@@ -1061,9 +1061,9 @@ function Index() {
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setGirisAcik(false)}>
-              İptal
+              {tr("iptal")}
             </Button>
-            <Button onClick={girisYap}>Giriş Yap</Button>
+            <Button onClick={girisYap}>{tr("girisYap")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -1082,14 +1082,14 @@ function Index() {
       >
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle>Parola Değiştir</DialogTitle>
+            <DialogTitle>{tr("parolaDegistir")}</DialogTitle>
             <DialogDescription>
-              Yeni parolanızı belirleyin.
+              {tr("yeniParolaBelirle")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3">
             <div className="space-y-1">
-              <Label>Mevcut parola</Label>
+              <Label>{tr("mevcutParolaLbl")}</Label>
               <ParolaInput
                 value={eskiParola}
                 onChange={(v) => {
@@ -1099,7 +1099,7 @@ function Index() {
               />
             </div>
             <div className="space-y-1">
-              <Label>Yeni parola</Label>
+              <Label>{tr("yeniParolaLbl")}</Label>
               <ParolaInput
                 value={yeniParola}
                 onChange={(v) => {
@@ -1109,7 +1109,7 @@ function Index() {
               />
             </div>
             <div className="space-y-1">
-              <Label>Yeni parola (tekrar)</Label>
+              <Label>{tr("yeniParolaTekrarLbl")}</Label>
               <ParolaInput
                 value={yeniParolaTekrar}
                 onChange={(v) => {
@@ -1125,9 +1125,9 @@ function Index() {
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setParolaDegistirAcik(false)}>
-              İptal
+              {tr("iptal")}
             </Button>
-            <Button onClick={parolaDegistir}>Değiştir</Button>
+            <Button onClick={parolaDegistir}>{tr("degistir")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
