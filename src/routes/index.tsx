@@ -1837,7 +1837,7 @@ function ParolaInput({
         onClick={() => setGoster((v) => !v)}
         className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-foreground"
         tabIndex={-1}
-        aria-label={goster ? tParolaGizle() : tParolaGoster()}
+        aria-label={goster ? "Parolayı gizle / የይለፍ ቃል ደብቅ" : "Parolayı göster / የይለፍ ቃል አሳይ"}
       >
         {goster ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
       </button>
@@ -1859,20 +1859,20 @@ function VermediDiyalog({
   talebeler: Talebe[];
   onTalebe: (t: Talebe) => void;
 }) {
-  const t = useT();
+  const tr = useT();
   return (
     <Dialog open={acik} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{t("dersVermeyenler")} · {gunAdi}</DialogTitle>
+          <DialogTitle>{tr("dersVermeyenler")} · {gunAdi}</DialogTitle>
           <DialogDescription>
-            {talebeler.length} {t("talebeIsaretliDegil")}
+            {talebeler.length} {tr("talebeIsaretliDegil")}
           </DialogDescription>
         </DialogHeader>
         <div className="max-h-[60vh] overflow-y-auto">
           {talebeler.length === 0 ? (
             <p className="py-6 text-center text-sm text-muted-foreground">
-              {t("hepsiVerdi")}
+              {tr("hepsiVerdi")}
             </p>
           ) : (
             <ul className="divide-y divide-border">
@@ -1887,11 +1887,11 @@ function VermediDiyalog({
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-sm font-medium">{t.isim}</div>
                       <div className="text-xs text-muted-foreground">
-                        {tCtx("sayfa")} {t.sayfa} · {cuzHesapla(t.sayfa)}{tCtx("cuzTam")}
+                        {tr("sayfa")} {t.sayfa} · {cuzHesapla(t.sayfa)}{tr("cuzTam")}
                       </div>
                     </div>
                     <span className="rounded-md border border-destructive/40 bg-destructive/10 px-2 py-0.5 text-[11px] font-semibold text-destructive">
-                      {t("vermedi")}
+                      {tr("vermedi")}
                     </span>
                   </button>
                 </li>
@@ -1900,7 +1900,7 @@ function VermediDiyalog({
           )}
         </div>
         <DialogFooter>
-          <Button variant="ghost" onClick={onClose}>{t("kapat")}</Button>
+          <Button variant="ghost" onClick={onClose}>{tr("kapat")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -1922,7 +1922,7 @@ function RaporDiyalog({
   haftaEtiketi: string;
   onTalebe: (t: Talebe) => void;
 }) {
-  const t = useT();
+  const tr = useT();
   const siralanmis = [...talebeler]
     .map((t) => ({ t, gun: getKiraatGunler(t, haftaBas).length }))
     .sort((a, b) => b.gun - a.gun);
@@ -1955,7 +1955,7 @@ function RaporDiyalog({
                   {t.isim}
                 </span>
                 <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold tabular-nums text-primary">
-                  {gun}{t("gun7")}
+                  {gun}{tr("gun7")}
                 </span>
               </button>
             </li>
@@ -1969,16 +1969,16 @@ function RaporDiyalog({
     <Dialog open={acik} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>{t("haftaninRaporu")}</DialogTitle>
+          <DialogTitle>{tr("haftaninRaporu")}</DialogTitle>
           <DialogDescription>{haftaEtiketi}</DialogDescription>
         </DialogHeader>
         <div className="max-h-[65vh] space-y-4 overflow-y-auto">
-          {grup(t("enIyiler"), "text-primary", enIyiler)}
-          {grup(t("ortalar"), "text-amber-600 dark:text-amber-400", ortalar)}
-          {grup(t("zayiflar"), "text-destructive", zayiflar)}
+          {grup(tr("enIyiler"), "text-primary", enIyiler)}
+          {grup(tr("ortalar"), "text-amber-600 dark:text-amber-400", ortalar)}
+          {grup(tr("zayiflar"), "text-destructive", zayiflar)}
         </div>
         <DialogFooter>
-          <Button variant="ghost" onClick={onClose}>{t("kapat")}</Button>
+          <Button variant="ghost" onClick={onClose}>{tr("kapat")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
