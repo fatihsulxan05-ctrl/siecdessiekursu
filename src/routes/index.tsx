@@ -1994,15 +1994,13 @@ function SayfaEditor({
   duzenlenebilir: boolean;
   onKaydet: (sayfa: number) => void;
 }) {
+  const tr = useT();
   const [acik, setAcik] = useState(false);
   const [taslak, setTaslak] = useState<number>(talebe.sayfa);
 
   useEffect(() => {
     if (acik) setTaslak(talebe.sayfa);
   }, [acik, talebe.sayfa]);
-
-  const clamp = (n: number) => Math.max(1, Math.min(604, Math.round(n)));
-  const adim = (n: number) => setTaslak((p) => clamp(p + n));
 
   if (!duzenlenebilir) {
     return <span>{talebe.sayfa}</span>;
@@ -2014,89 +2012,152 @@ function SayfaEditor({
         <button
           type="button"
           className="rounded-md px-2 py-1 font-medium hover:bg-muted/60"
-          title="Sayfayı düzenle"
+          title={tr("sayfayiDuzenle")}
         >
           {talebe.sayfa}
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-56 p-3" align="center">
-        <div className="space-y-3 text-center">
-          <div className="text-xs text-muted-foreground">
-            {talebe.isim} — Sayfa
+      <PopoverContent
+        className="w-[280px] overflow-hidden rounded-2xl border-border/60 bg-gradient-to-b from-card to-secondary/40 p-0 shadow-2xl"
+        align="center"
+      >
+        <div className="border-b border-border/40 px-4 py-2.5 text-center">
+          <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
+            {talebe.isim}
           </div>
-          <div className="flex items-center justify-center gap-2">
-            <Button
-              size="icon"
-              variant="outline"
-              className="h-9 w-9"
-              onClick={() => adim(-10)}
-              title="-10"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              size="icon"
-              variant="outline"
-              className="h-9 w-9"
-              onClick={() => adim(-1)}
-              title="-1"
-            >
-              <Minus className="h-4 w-4" />
-            </Button>
-            <Input
-              type="number"
-              inputMode="numeric"
-              min={1}
-              max={604}
-              value={taslak}
-              onChange={(e) => {
-                const v = Number(e.target.value);
-                if (Number.isFinite(v)) setTaslak(clamp(v));
-              }}
-              onWheel={(e) => {
-                e.preventDefault();
-                adim(e.deltaY > 0 ? -1 : 1);
-              }}
-              className="h-9 w-16 text-center text-base tabular-nums"
-            />
-            <Button
-              size="icon"
-              variant="outline"
-              className="h-9 w-9"
-              onClick={() => adim(1)}
-              title="+1"
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-            <Button
-              size="icon"
-              variant="outline"
-              className="h-9 w-9"
-              onClick={() => adim(10)}
-              title="+10"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
+          <div className="mt-0.5 text-2xl font-semibold tabular-nums text-foreground">
+            {taslak}
           </div>
-          <div className="text-xs text-muted-foreground">
-            {cuzHesapla(taslak)}. cüz
+          <div className="text-[11px] text-muted-foreground">
+            {cuzHesapla(taslak)}
+            {tr("cuzTam")}
           </div>
-          <div className="flex justify-center gap-2">
-            <Button size="sm" variant="ghost" onClick={() => setAcik(false)}>
-              İptal
-            </Button>
-            <Button
-              size="sm"
-              onClick={() => {
-                onKaydet(clamp(taslak));
-                setAcik(false);
-              }}
-            >
-              Kaydet
-            </Button>
-          </div>
+        </div>
+
+        <SayfaCarki value={taslak} onChange={setTaslak} />
+
+        <div className="flex items-center justify-between gap-2 border-t border-border/40 px-3 py-2">
+          <Button size="sm" variant="ghost" onClick={() => setAcik(false)}>
+            {tr("iptal")}
+          </Button>
+          <Button
+            size="sm"
+            className="px-5"
+            onClick={() => {
+              onKaydet(Math.max(1, Math.min(604, Math.round(taslak))));
+              setAcik(false);
+            }}
+          >
+            {tr("kaydet")}
+          </Button>
         </div>
       </PopoverContent>
     </Popover>
+  );
+}
+
+function SayfaCarki({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (n: number) => void;
+}) {
+  const ITEM_H = 40;
+  const VISIBLE = 7; // odd: center + 3 on each side
+  const PAD = Math.floor(VISIBLE / 2);
+  const MIN = 1;
+  const MAX = 604;
+  const sayilar = useMemo(
+    () => Array.from({ length: MAX - MIN + 1 }, (_, i) => MIN + i),
+    [],
+  );
+  const ref = useRef<HTMLDivElement | null>(null);
+  const programatik = useRef(false);
+  const zaman = useRef<number | null>(null);
+
+  // Sync external value -> scroll
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const top = (value - MIN) * ITEM_H;
+    if (Math.abs(el.scrollTop - top) > 1) {
+      programatik.current = true;
+      el.scrollTo({ top, behavior: "auto" });
+      window.setTimeout(() => {
+        programatik.current = false;
+      }, 30);
+    }
+  }, [value]);
+
+  const onScroll = () => {
+    const el = ref.current;
+    if (!el || programatik.current) return;
+    if (zaman.current) window.clearTimeout(zaman.current);
+    const idx = Math.round(el.scrollTop / ITEM_H);
+    const n = Math.max(MIN, Math.min(MAX, MIN + idx));
+    if (n !== value) onChange(n);
+    // settle / snap if needed
+    zaman.current = window.setTimeout(() => {
+      const hedef = (n - MIN) * ITEM_H;
+      if (Math.abs(el.scrollTop - hedef) > 0.5) {
+        programatik.current = true;
+        el.scrollTo({ top: hedef, behavior: "smooth" });
+        window.setTimeout(() => {
+          programatik.current = false;
+        }, 200);
+      }
+    }, 120);
+  };
+
+  return (
+    <div className="relative h-[280px] select-none">
+      {/* center highlight band */}
+      <div
+        className="pointer-events-none absolute inset-x-3 top-1/2 -translate-y-1/2 rounded-xl bg-primary/10 ring-1 ring-primary/30"
+        style={{ height: ITEM_H }}
+      />
+      {/* fade gradients */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16 bg-gradient-to-b from-card to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-16 bg-gradient-to-t from-card to-transparent" />
+
+      <div
+        ref={ref}
+        onScroll={onScroll}
+        className="h-full overflow-y-scroll scrollbar-none"
+        style={{
+          scrollSnapType: "y mandatory",
+          scrollBehavior: "smooth",
+          WebkitOverflowScrolling: "touch",
+        }}
+      >
+        <div style={{ paddingTop: PAD * ITEM_H, paddingBottom: PAD * ITEM_H }}>
+          {sayilar.map((n) => {
+            const aktif = n === value;
+            const fark = Math.abs(n - value);
+            const opak = aktif ? 1 : Math.max(0.18, 1 - fark * 0.22);
+            const olc = aktif ? 1.15 : Math.max(0.85, 1 - fark * 0.06);
+            return (
+              <div
+                key={n}
+                onClick={() => onChange(n)}
+                className={`flex cursor-pointer items-center justify-center font-semibold tabular-nums transition-[opacity,transform] ${
+                  aktif ? "text-primary" : "text-foreground"
+                }`}
+                style={{
+                  height: ITEM_H,
+                  scrollSnapAlign: "center",
+                  opacity: opak,
+                  transform: `scale(${olc})`,
+                  fontSize: aktif ? 26 : 20,
+                }}
+              >
+                {n}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
   );
 }
