@@ -656,6 +656,7 @@ function Index() {
   };
 
   return (
+    <DilContext.Provider value={dil}>
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-6xl px-2 py-4 sm:px-6 sm:py-12">
         <header className="relative mb-6 flex flex-col items-center gap-3 text-center sm:mb-12 sm:gap-5">
@@ -1161,6 +1162,7 @@ function Index() {
         }}
       />
     </div>
+    </DilContext.Provider>
   );
 }
 
