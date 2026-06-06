@@ -1215,6 +1215,7 @@ function ProfilDiyalog({
     patch: Partial<Pick<Talebe, "telefon" | "notlar">>,
   ) => void;
 }) {
+  const t = useT();
   const [yukleniyor, setYukleniyor] = useState(false);
   const [hata, setHata] = useState<string | null>(null);
   const [telefon, setTelefon] = useState("");
@@ -1239,7 +1240,7 @@ function ProfilDiyalog({
       const url = await dosyaFotoDataUrl(file);
       onFotoDegistir(talebe, url);
     } catch (e) {
-      setHata(e instanceof Error ? e.message : "Yükleme başarısız");
+      setHata(e instanceof Error ? e.message : t("yuklemeBasarisiz"));
     } finally {
       setYukleniyor(false);
     }
@@ -1251,9 +1252,9 @@ function ProfilDiyalog({
     <Dialog open={!!talebe} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Talebe Profili</DialogTitle>
+          <DialogTitle>{t("talebeProfili")}</DialogTitle>
           <DialogDescription>
-            Fotoğraf ve kişisel bilgiler.
+            {t("fotoVeKisisel")}
           </DialogDescription>
         </DialogHeader>
 
@@ -1263,14 +1264,14 @@ function ProfilDiyalog({
               type="button"
               onClick={() => talebe.fotoUrl && setFotoBuyuk(true)}
               className={`block rounded-full ${talebe.fotoUrl ? "cursor-zoom-in" : "cursor-default"}`}
-              title={talebe.fotoUrl ? "Fotoğrafı büyüt" : undefined}
+              title={talebe.fotoUrl ? t("fotoBuyut") : undefined}
             >
               <TalebeAvatar talebe={talebe} boyut={120} />
             </button>
             {hocaModu && (
               <label
                 className="absolute -bottom-1 -right-1 inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-primary text-primary-foreground shadow ring-2 ring-background hover:opacity-90"
-                title="Fotoğraf yükle"
+                title={t("fotoYukle")}
               >
                 {yukleniyor ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -1292,8 +1293,8 @@ function ProfilDiyalog({
           <div className="text-center">
             <div className="text-lg font-semibold">{talebe.isim}</div>
             <div className="text-xs text-muted-foreground">
-              Sayfa {talebe.sayfa} · {cuzHesapla(talebe.sayfa)}. cüz · Hedef{" "}
-              {haftalikHedef} sf/hafta
+              {t("sayfa")} {talebe.sayfa} · {cuzHesapla(talebe.sayfa)}{t("cuzTam")} · {t("hedefSf")}{" "}
+              {haftalikHedef} {t("sfPerHafta")}
             </div>
           </div>
           {hocaModu && talebe.fotoUrl && (
@@ -1303,7 +1304,7 @@ function ProfilDiyalog({
               className="text-xs text-muted-foreground"
               onClick={() => onFotoDegistir(talebe, "")}
             >
-              Fotoğrafı kaldır
+              {t("fotoKaldir")}
             </Button>
           )}
           {hata && <p className="text-xs text-destructive">{hata}</p>}
@@ -1312,7 +1313,7 @@ function ProfilDiyalog({
         <div className="mt-2 space-y-3">
           <div className="space-y-1.5">
             <Label className="flex items-center gap-1.5 text-sm">
-              <Phone className="h-3.5 w-3.5" /> Telefon
+              <Phone className="h-3.5 w-3.5" /> {t("telefon")}
             </Label>
             <div className="flex gap-2">
               <Input
@@ -1325,7 +1326,7 @@ function ProfilDiyalog({
                 className="text-base"
               />
               {telefon.trim() && (
-                <Button asChild size="icon" variant="outline" title="Ara">
+                <Button asChild size="icon" variant="outline" title={t("ara")}>
                   <a href={`tel:${telefon.replace(/\s+/g, "")}`}>
                     <Phone className="h-4 w-4" />
                   </a>
@@ -1335,7 +1336,7 @@ function ProfilDiyalog({
           </div>
           <div className="space-y-1.5">
             <Label className="flex items-center gap-1.5 text-sm">
-              <StickyNote className="h-3.5 w-3.5" /> Notlar
+              <StickyNote className="h-3.5 w-3.5" /> {t("notlar")}
             </Label>
             <Textarea
               value={notlar}
@@ -1350,7 +1351,7 @@ function ProfilDiyalog({
 
         <DialogFooter className="gap-2 sm:gap-2">
           <Button variant="ghost" onClick={onClose}>
-            Kapat
+            {t("kapat")}
           </Button>
           {hocaModu && (
             <>
@@ -1358,7 +1359,7 @@ function ProfilDiyalog({
                 variant="outline"
                 onClick={() => onDuzenle(talebe)}
               >
-                <UserIcon className="h-4 w-4" /> İsim & ilerleme
+                <UserIcon className="h-4 w-4" /> {t("isimVeIlerleme")}
               </Button>
               <Button
                 onClick={() => {
@@ -1369,7 +1370,7 @@ function ProfilDiyalog({
                   onClose();
                 }}
               >
-                Kaydet
+                {t("kaydet")}
               </Button>
             </>
           )}
@@ -1380,8 +1381,8 @@ function ProfilDiyalog({
         <Dialog open={fotoBuyuk} onOpenChange={(o) => !o && setFotoBuyuk(false)}>
           <DialogContent className="max-w-[95vw] border-0 bg-transparent p-0 shadow-none sm:max-w-[90vw]">
             <DialogHeader className="sr-only">
-              <DialogTitle>{talebe.isim} fotoğrafı</DialogTitle>
-              <DialogDescription>Büyütülmüş fotoğraf görünümü.</DialogDescription>
+              <DialogTitle>{talebe.isim} {t("fotoBaslik")}</DialogTitle>
+              <DialogDescription>{t("fotoBuyutGorunum")}</DialogDescription>
             </DialogHeader>
             <img
               src={talebe.fotoUrl}
@@ -1479,11 +1480,12 @@ function GunDurum({
   duzenlenebilir: boolean;
   onToggle: () => void;
 }) {
+  const t = useT();
   const sinif = verdi
     ? "bg-primary text-primary-foreground border-primary"
     : "bg-muted/40 text-muted-foreground border-border";
   const kisa = verdi ? "✓" : "—";
-  const uzun = verdi ? "Verdi" : "Vermedi";
+  const uzun = verdi ? t("verdi") : t("vermedi");
   const icerik = <span>{uzun}</span>;
   if (duzenlenebilir) {
     return (
@@ -1532,6 +1534,7 @@ function HedefRozet({
   hedef: number;
   bazSayfa: number;
 }) {
+  const t = useT();
   if (!hedef || hedef <= 0) {
     return <span className="text-xs text-muted-foreground">—</span>;
   }
@@ -1539,21 +1542,21 @@ function HedefRozet({
   const oran = Math.round((yapilan / hedef) * 100);
   let renk = "bg-destructive/10 text-destructive";
   let nokta = "bg-destructive";
-  let etiket = "Geride";
+  let etiket: string = t("geride");
   if (oran >= 100) {
     renk = "bg-primary/10 text-primary";
     nokta = "bg-primary";
-    etiket = "Hedefte";
+    etiket = t("hedefte");
   } else if (oran >= 50) {
     renk = "bg-amber-500/15 text-amber-600 dark:text-amber-400";
     nokta = "bg-amber-500";
-    etiket = "Yolda";
+    etiket = t("yolda");
   }
   return (
     <div className="flex flex-col items-center gap-0.5">
       <span
         className={`inline-flex items-center gap-1 rounded-full px-1.5 py-0 text-[10px] font-medium leading-tight tabular-nums ${renk}`}
-        title={`${yapilan} / ${hedef} sf · hedef sayfa ${hedefSayfa} · ${etiket}`}
+        title={`${yapilan} / ${hedef} ${t("sayfaKisa")} · ${t("hedefSayfaEtiket")} ${hedefSayfa} · ${etiket}`}
       >
         <span className={`h-1 w-1 rounded-full ${nokta}`} />
         %{oran}
@@ -1571,6 +1574,7 @@ function DuzenleDiyalog({
   onClose: () => void;
   onKaydet: (p: Partial<Talebe>) => void;
 }) {
+  const t = useT();
   const [isim, setIsim] = useState("");
   const [yon, setYon] = useState<KiraatYonu>("alttan");
   const [sayfaTaslak, setSayfaTaslak] = useState("1");
@@ -1591,16 +1595,16 @@ function DuzenleDiyalog({
 
   const sayfaDogrula = (deger: string): number | null => {
     if (deger.trim() === "") {
-      setSayfaHata("Sayfa boş olamaz");
+      setSayfaHata(t("sayfaBosOlamaz"));
       return null;
     }
     if (!/^\d+$/.test(deger)) {
-      setSayfaHata("Yalnızca rakam giriniz");
+      setSayfaHata(t("yalnizcaRakam"));
       return null;
     }
     const n = Number(deger);
     if (n < 1 || n > 604) {
-      setSayfaHata("Sayfa 1 ile 604 arasında olmalı");
+      setSayfaHata(t("sayfaAralikHata"));
       return null;
     }
     setSayfaHata(null);
@@ -1609,16 +1613,16 @@ function DuzenleDiyalog({
 
   const hedefDogrula = (deger: string): number | null => {
     if (deger.trim() === "") {
-      setHedefHata("Hedef boş olamaz");
+      setHedefHata(t("hedefBosOlamaz"));
       return null;
     }
     if (!/^\d+$/.test(deger)) {
-      setHedefHata("Yalnızca rakam giriniz");
+      setHedefHata(t("yalnizcaRakam"));
       return null;
     }
     const n = Number(deger);
     if (n < 0 || n > 200) {
-      setHedefHata("Hedef 0 ile 200 arasında olmalı");
+      setHedefHata(t("hedefAralikHata"));
       return null;
     }
     setHedefHata(null);
@@ -1642,15 +1646,15 @@ function DuzenleDiyalog({
     <Dialog open={!!talebe} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Talebeyi Düzenle</DialogTitle>
+          <DialogTitle>{t("talebeyiDuzenle")}</DialogTitle>
           <DialogDescription>
-            İsim, ders ve Kur'an-ı Kerim ilerlemesi.
+            {t("isimDersIlerleme")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           <div className="space-y-1.5">
-            <Label>İsim</Label>
+            <Label>{t("isim")}</Label>
             <Input
               value={isim}
               onChange={(e) => setIsim(e.target.value.slice(0, 60))}
@@ -1659,7 +1663,7 @@ function DuzenleDiyalog({
           </div>
 
           <div className="space-y-1.5">
-            <Label>Kıraat yönü</Label>
+            <Label>{t("kiraatYonu")}</Label>
             <Select
               value={yon}
               onValueChange={(v) => {
@@ -1680,23 +1684,23 @@ function DuzenleDiyalog({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="alttan">Alttan (Sayfa 1 → 604)</SelectItem>
-                <SelectItem value="ustten">Üstten (Sayfa 604 → 1)</SelectItem>
+                <SelectItem value="alttan">{t("alttan")}</SelectItem>
+                <SelectItem value="ustten">{t("ustten")}</SelectItem>
               </SelectContent>
             </Select>
             <p className="text-xs text-muted-foreground">
-              Hedef hesabı bu yöne göre yapılır.
+              {t("hedefHesabiYon")}
             </p>
           </div>
 
           <p className="text-xs text-muted-foreground">
-            Kıraat günlerini ana tablodaki gün rozetlerinden işaretleyebilirsiniz.
+            {t("kiraatGunIpucu")}
           </p>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label className="flex items-center gap-1.5">
-                <BookOpen className="h-3.5 w-3.5" /> Sayfa (1-604)
+                <BookOpen className="h-3.5 w-3.5" /> {t("sayfaAralik")}
               </Label>
               <Input
                 type="number"
@@ -1717,16 +1721,16 @@ function DuzenleDiyalog({
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Cüz (otomatik)</Label>
+              <Label>{t("cuzOtomatik")}</Label>
               <div className="flex h-9 items-center rounded-md border border-input bg-secondary/40 px-3 text-sm font-medium text-secondary-foreground">
-                {cuz}{typeof cuz === "number" ? ". cüz" : ""}
+                {cuz}{typeof cuz === "number" ? t("cuzTam") : ""}
               </div>
             </div>
           </div>
           {sayfaHata && <p className="text-xs text-destructive">{sayfaHata}</p>}
 
           <div className="space-y-1.5">
-            <Label>Haftalık hedef (sayfa)</Label>
+            <Label>{t("haftalikHedefSayfa")}</Label>
             <Input
               type="number"
               inputMode="numeric"
@@ -1746,7 +1750,7 @@ function DuzenleDiyalog({
               <p className="text-xs text-destructive">{hedefHata}</p>
             ) : (
               <p className="text-xs text-muted-foreground">
-                0 yazarsanız hedef takibi devre dışı kalır.
+                {t("hedefSifirIpucu")}
               </p>
             )}
           </div>
@@ -1754,13 +1758,13 @@ function DuzenleDiyalog({
 
         <DialogFooter>
           <Button variant="ghost" onClick={onClose}>
-            İptal
+            {t("iptal")}
           </Button>
           <Button
             onClick={kaydet}
             disabled={!!sayfaHata || !!hedefHata || !isim.trim()}
           >
-            Kaydet
+            {t("kaydet")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -1833,7 +1837,7 @@ function ParolaInput({
         onClick={() => setGoster((v) => !v)}
         className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-foreground"
         tabIndex={-1}
-        aria-label={goster ? "Parolayı gizle" : "Parolayı göster"}
+        aria-label={goster ? tParolaGizle() : tParolaGoster()}
       >
         {goster ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
       </button>
@@ -1855,19 +1859,20 @@ function VermediDiyalog({
   talebeler: Talebe[];
   onTalebe: (t: Talebe) => void;
 }) {
+  const t = useT();
   return (
     <Dialog open={acik} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Ders Vermeyenler · {gunAdi}</DialogTitle>
+          <DialogTitle>{t("dersVermeyenler")} · {gunAdi}</DialogTitle>
           <DialogDescription>
-            {talebeler.length} talebe bu gün için işaretli değil.
+            {talebeler.length} {t("talebeIsaretliDegil")}
           </DialogDescription>
         </DialogHeader>
         <div className="max-h-[60vh] overflow-y-auto">
           {talebeler.length === 0 ? (
             <p className="py-6 text-center text-sm text-muted-foreground">
-              Bu gün tüm talebeler ders verdi. 🎉
+              {t("hepsiVerdi")}
             </p>
           ) : (
             <ul className="divide-y divide-border">
@@ -1882,11 +1887,11 @@ function VermediDiyalog({
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-sm font-medium">{t.isim}</div>
                       <div className="text-xs text-muted-foreground">
-                        Sayfa {t.sayfa} · {cuzHesapla(t.sayfa)}. cüz
+                        {tCtx("sayfa")} {t.sayfa} · {cuzHesapla(t.sayfa)}{tCtx("cuzTam")}
                       </div>
                     </div>
                     <span className="rounded-md border border-destructive/40 bg-destructive/10 px-2 py-0.5 text-[11px] font-semibold text-destructive">
-                      Vermedi
+                      {t("vermedi")}
                     </span>
                   </button>
                 </li>
@@ -1895,7 +1900,7 @@ function VermediDiyalog({
           )}
         </div>
         <DialogFooter>
-          <Button variant="ghost" onClick={onClose}>Kapat</Button>
+          <Button variant="ghost" onClick={onClose}>{t("kapat")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -1917,6 +1922,7 @@ function RaporDiyalog({
   haftaEtiketi: string;
   onTalebe: (t: Talebe) => void;
 }) {
+  const t = useT();
   const siralanmis = [...talebeler]
     .map((t) => ({ t, gun: getKiraatGunler(t, haftaBas).length }))
     .sort((a, b) => b.gun - a.gun);
@@ -1949,7 +1955,7 @@ function RaporDiyalog({
                   {t.isim}
                 </span>
                 <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold tabular-nums text-primary">
-                  {gun}/7 gün
+                  {gun}{t("gun7")}
                 </span>
               </button>
             </li>
@@ -1963,16 +1969,16 @@ function RaporDiyalog({
     <Dialog open={acik} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Haftanın Raporu</DialogTitle>
+          <DialogTitle>{t("haftaninRaporu")}</DialogTitle>
           <DialogDescription>{haftaEtiketi}</DialogDescription>
         </DialogHeader>
         <div className="max-h-[65vh] space-y-4 overflow-y-auto">
-          {grup("🌟 En çok ders verenler (4+ gün)", "text-primary", enIyiler)}
-          {grup("⚖️ Orta seviye (2-3 gün)", "text-amber-600 dark:text-amber-400", ortalar)}
-          {grup("⚠️ Zayıf (0-1 gün)", "text-destructive", zayiflar)}
+          {grup(t("enIyiler"), "text-primary", enIyiler)}
+          {grup(t("ortalar"), "text-amber-600 dark:text-amber-400", ortalar)}
+          {grup(t("zayiflar"), "text-destructive", zayiflar)}
         </div>
         <DialogFooter>
-          <Button variant="ghost" onClick={onClose}>Kapat</Button>
+          <Button variant="ghost" onClick={onClose}>{t("kapat")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
