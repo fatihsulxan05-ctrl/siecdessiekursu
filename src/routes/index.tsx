@@ -478,7 +478,10 @@ function Index() {
       document.documentElement.dir = "ltr";
     }
   }, [dil]);
-  const tr = (k: keyof typeof SOZLUK.tr) => SOZLUK[dil][k] ?? SOZLUK.tr[k];
+  const tr = <K extends SozlukAnahtar>(k: K): (typeof SOZLUK)["tr"][K] => {
+    const v = (SOZLUK[dil] as typeof SOZLUK.tr)[k];
+    return (v ?? SOZLUK.tr[k]) as (typeof SOZLUK)["tr"][K];
+  };
 
   function haftaBaslastik() {
     return haftaBaslangici();
