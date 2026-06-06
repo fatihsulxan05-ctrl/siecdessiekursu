@@ -49,7 +49,6 @@ import {
   Eye,
   EyeOff,
   Languages,
-  Minus,
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
