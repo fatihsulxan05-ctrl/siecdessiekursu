@@ -437,6 +437,15 @@ function getKiraatGunler(t: Talebe, haftaBas: number): number[] {
   return Array.isArray(k) ? [...k].sort((a, b) => a - b) : [];
 }
 
+function getDersGunlerMap(t: Talebe, ders: Ders): Record<string, number[]> | undefined {
+  return ders === "kuran" ? t.kiraatGunler : ders === "fikih" ? t.fikihGunler : t.hadisGunler;
+}
+
+function getDersGunler(t: Talebe, ders: Ders, haftaBas: number): number[] {
+  const k = getDersGunlerMap(t, ders)?.[String(haftaBas)];
+  return Array.isArray(k) ? [...k].sort((a, b) => a - b) : [];
+}
+
 function toggleGun(mevcut: number[], gun: number): number[] {
   return mevcut.includes(gun)
     ? mevcut.filter((g) => g !== gun)
