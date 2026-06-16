@@ -2257,3 +2257,78 @@ function SayfaCarki({
     </div>
   );
 }
+
+function SayiEditor({
+  deger,
+  max,
+  ekKisa,
+  duzenlenebilir,
+  onKaydet,
+}: {
+  deger: number;
+  max: number;
+  ekKisa?: string;
+  duzenlenebilir: boolean;
+  onKaydet: (n: number) => void;
+}) {
+  const [acik, setAcik] = useState(false);
+  const [taslak, setTaslak] = useState<string>(String(deger));
+
+  useEffect(() => {
+    if (acik) setTaslak(String(deger));
+  }, [acik, deger]);
+
+  if (!duzenlenebilir) {
+    return (
+      <span>
+        {deger}
+        {ekKisa ? <span className="text-muted-foreground">{ekKisa}</span> : null}
+      </span>
+    );
+  }
+
+  const kaydet = () => {
+    const n = Number(taslak);
+    if (!Number.isFinite(n)) return;
+    const sinirli = Math.max(1, Math.min(max, Math.round(n)));
+    onKaydet(sinirli);
+    setAcik(false);
+  };
+
+  return (
+    <Popover open={acik} onOpenChange={setAcik}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="rounded-md px-2 py-1 font-medium hover:bg-muted/60"
+        >
+          {deger}
+          {ekKisa ? <span className="text-muted-foreground">{ekKisa}</span> : null}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[200px] p-3" align="center">
+        <div className="flex items-center gap-2">
+          <Input
+            type="number"
+            inputMode="numeric"
+            min={1}
+            max={max}
+            value={taslak}
+            onChange={(e) => setTaslak(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") kaydet();
+            }}
+            autoFocus
+            className="h-9 text-center text-base"
+          />
+          <Button size="sm" onClick={kaydet}>
+            <Check className="h-4 w-4" />
+          </Button>
+        </div>
+        <p className="mt-1 text-center text-[11px] text-muted-foreground">
+          1 - {max}
+        </p>
+      </PopoverContent>
+    </Popover>
+  );
+}
