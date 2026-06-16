@@ -1105,7 +1105,7 @@ function Index() {
         onClose={() => setVermediAcik(false)}
         gunAdi={tr("haftaGunUzun")[seciliGun]}
         talebeler={talebeler.filter(
-          (t) => !getKiraatGunler(t, seciliHafta).includes(seciliGun),
+          (t) => !getDersGunler(t, seciliDers, seciliHafta).includes(seciliGun),
         )}
         onTalebe={(t) => {
           setVermediAcik(false);
