@@ -479,6 +479,7 @@ function Index() {
   const [hocaTaslak, setHocaTaslak] = useState(hoca);
   const [seciliHafta, setSeciliHafta] = useState<number>(() => haftaBaslastik());
   const [seciliGun, setSeciliGun] = useState<number>(() => bugununGunu());
+  const [seciliDers, setSeciliDers] = useState<Ders>("kuran");
 
   const [parolaDegistirAcik, setParolaDegistirAcik] = useState(false);
   const [eskiParola, setEskiParola] = useState("");
