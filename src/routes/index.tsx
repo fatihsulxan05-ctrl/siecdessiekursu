@@ -853,7 +853,7 @@ function Index() {
           </Button>
         </div>
 
-        {hocaModu && (
+        {hocaModu && seciliDers === "kuran" && (
           <div className="mb-3 flex flex-wrap items-center gap-2 rounded-md border border-border/60 bg-secondary/30 px-3 py-2">
             <span className="text-xs uppercase tracking-wider text-muted-foreground">
               {tr("topluHedef")}
