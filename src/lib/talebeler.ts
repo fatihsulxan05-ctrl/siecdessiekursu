@@ -67,6 +67,16 @@ export function talebeleriDinle(
           dogum: typeof v.dogum === "string" ? v.dogum : undefined,
           notlar: typeof v.notlar === "string" ? v.notlar : undefined,
           yon: v.yon === "ustten" ? "ustten" : "alttan",
+          fikihKonu: typeof v.fikihKonu === "number" ? v.fikihKonu : 1,
+          fikihGunler:
+            v.fikihGunler && typeof v.fikihGunler === "object"
+              ? (v.fikihGunler as Record<string, number[]>)
+              : {},
+          hadisNo: typeof v.hadisNo === "number" ? v.hadisNo : 1,
+          hadisGunler:
+            v.hadisGunler && typeof v.hadisGunler === "object"
+              ? (v.hadisGunler as Record<string, number[]>)
+              : {},
         };
       });
       cb(liste);
