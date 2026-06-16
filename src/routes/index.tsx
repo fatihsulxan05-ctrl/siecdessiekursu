@@ -92,7 +92,7 @@ type Dil = "tr" | "am";
 
 const SOZLUK = {
   tr: {
-    baslik: "SİEC DESSİE KURSU",
+    baslik: "Siec Dessie Medrese",
     altBaslik: "Talebe Başarı Paneli",
     girisYap: "Giriş Yap",
     girisYapKisa: "Giriş yap",
@@ -204,7 +204,7 @@ const SOZLUK = {
     ],
   },
   am: {
-    baslik: "ሲኤክ ደሴ ኮርስ",
+    baslik: "Siec Dessie Medrese",
     altBaslik: "የተማሪ ስኬት ፓነል",
     girisYap: "ግባ",
     girisYapKisa: "ግባ",
