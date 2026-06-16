@@ -591,6 +591,21 @@ function Index() {
     });
   };
 
+  const dersGunToggle = (t: Talebe, ders: Ders, gun: number) => {
+    if (ders === "kuran") {
+      kiraatGunToggle(t, gun);
+      return;
+    }
+    const key = String(seciliHafta);
+    const map = getDersGunlerMap(t, ders) ?? {};
+    const mevcut = Array.isArray(map[key]) ? map[key] : [];
+    const yeni = toggleGun(mevcut, gun);
+    const harita = { ...map, [key]: yeni };
+    const patch: Partial<Talebe> =
+      ders === "fikih" ? { fikihGunler: harita } : { hadisGunler: harita };
+    void talebeGuncelle(t.id, patch);
+  };
+
   const ekle = () => {
     const yeniNo = talebeler.length + 1;
     const enBuyukSira = talebeler.reduce(
@@ -605,6 +620,8 @@ function Index() {
       gecmis: [{ t: Date.now(), sayfa: 1 }],
       sira: enBuyukSira + 1,
       yon: "alttan",
+      fikihKonu: 1,
+      hadisNo: 1,
     });
   };
 
@@ -620,10 +637,10 @@ function Index() {
   const ozet = useMemo(() => {
     const toplam = talebeler.length;
     const kiraatSayi = talebeler.filter(
-      (t) => getKiraatGunler(t, seciliHafta).includes(seciliGun),
+      (t) => getDersGunler(t, seciliDers, seciliHafta).includes(seciliGun),
     ).length;
     return { toplam, kiraatSayi };
-  }, [talebeler, seciliHafta, seciliGun]);
+  }, [talebeler, seciliHafta, seciliGun, seciliDers]);
 
   const [topluHedefTaslak, setTopluHedefTaslak] = useState("5");
   const [topluHedefHata, setTopluHedefHata] = useState<string | null>(null);
