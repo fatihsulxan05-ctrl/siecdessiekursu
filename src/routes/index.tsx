@@ -60,6 +60,7 @@ import {
   type Talebe,
   type SayfaKaydi,
   type KiraatYonu,
+  type Ders,
 } from "@/lib/talebeler";
 import { dosyaFotoDataUrl, bashHarfler } from "@/lib/foto";
 import { Textarea } from "@/components/ui/textarea";
@@ -192,6 +193,15 @@ const SOZLUK = {
     gun7: "/7 gün",
     sayfayiDuzenle: "Sayfayı düzenle",
     digerDil: "አማርኛ",
+    dersKuran: "Kur'an-ı Kerim",
+    dersFikih: "Fıkıh (Sefînetü'n-Necâh)",
+    dersHadis: "Hadis (Erbaîn-i Nevevî)",
+    dersKuranKisa: "Kur'an",
+    dersFikihKisa: "Fıkıh",
+    dersHadisKisa: "Hadis",
+    konu: "Konu",
+    hadisNo: "Hadis No",
+    dersSecimi: "Ders",
     haftaGun: ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Pzr"],
     haftaGunUzun: [
       "Pazartesi",
@@ -304,6 +314,15 @@ const SOZLUK = {
     gun7: "/7 ቀን",
     sayfayiDuzenle: "ገጹን አስተካክል",
     digerDil: "Türkçe",
+    dersKuran: "ቁርዓን",
+    dersFikih: "ፊቅህ (ሰፊነቱ ነጃህ)",
+    dersHadis: "ሐዲስ (አርበዒን ነወዊ)",
+    dersKuranKisa: "ቁርዓን",
+    dersFikihKisa: "ፊቅህ",
+    dersHadisKisa: "ሐዲስ",
+    konu: "ምዕራፍ",
+    hadisNo: "የሐዲስ ቁ.",
+    dersSecimi: "ትምህርት",
     haftaGun: ["ሰኞ", "ማክሰ", "ረቡዕ", "ሐሙስ", "ዓርብ", "ቅዳሜ", "እሑድ"],
     haftaGunUzun: [
       "ሰኞ",
@@ -418,6 +437,15 @@ function getKiraatGunler(t: Talebe, haftaBas: number): number[] {
   return Array.isArray(k) ? [...k].sort((a, b) => a - b) : [];
 }
 
+function getDersGunlerMap(t: Talebe, ders: Ders): Record<string, number[]> | undefined {
+  return ders === "kuran" ? t.kiraatGunler : ders === "fikih" ? t.fikihGunler : t.hadisGunler;
+}
+
+function getDersGunler(t: Talebe, ders: Ders, haftaBas: number): number[] {
+  const k = getDersGunlerMap(t, ders)?.[String(haftaBas)];
+  return Array.isArray(k) ? [...k].sort((a, b) => a - b) : [];
+}
+
 function toggleGun(mevcut: number[], gun: number): number[] {
   return mevcut.includes(gun)
     ? mevcut.filter((g) => g !== gun)
@@ -451,6 +479,7 @@ function Index() {
   const [hocaTaslak, setHocaTaslak] = useState(hoca);
   const [seciliHafta, setSeciliHafta] = useState<number>(() => haftaBaslastik());
   const [seciliGun, setSeciliGun] = useState<number>(() => bugununGunu());
+  const [seciliDers, setSeciliDers] = useState<Ders>("kuran");
 
   const [parolaDegistirAcik, setParolaDegistirAcik] = useState(false);
   const [eskiParola, setEskiParola] = useState("");
@@ -562,6 +591,21 @@ function Index() {
     });
   };
 
+  const dersGunToggle = (t: Talebe, ders: Ders, gun: number) => {
+    if (ders === "kuran") {
+      kiraatGunToggle(t, gun);
+      return;
+    }
+    const key = String(seciliHafta);
+    const map = getDersGunlerMap(t, ders) ?? {};
+    const mevcut = Array.isArray(map[key]) ? map[key] : [];
+    const yeni = toggleGun(mevcut, gun);
+    const harita = { ...map, [key]: yeni };
+    const patch: Partial<Talebe> =
+      ders === "fikih" ? { fikihGunler: harita } : { hadisGunler: harita };
+    void talebeGuncelle(t.id, patch);
+  };
+
   const ekle = () => {
     const yeniNo = talebeler.length + 1;
     const enBuyukSira = talebeler.reduce(
@@ -576,6 +620,8 @@ function Index() {
       gecmis: [{ t: Date.now(), sayfa: 1 }],
       sira: enBuyukSira + 1,
       yon: "alttan",
+      fikihKonu: 1,
+      hadisNo: 1,
     });
   };
 
@@ -591,10 +637,10 @@ function Index() {
   const ozet = useMemo(() => {
     const toplam = talebeler.length;
     const kiraatSayi = talebeler.filter(
-      (t) => getKiraatGunler(t, seciliHafta).includes(seciliGun),
+      (t) => getDersGunler(t, seciliDers, seciliHafta).includes(seciliGun),
     ).length;
     return { toplam, kiraatSayi };
-  }, [talebeler, seciliHafta, seciliGun]);
+  }, [talebeler, seciliHafta, seciliGun, seciliDers]);
 
   const [topluHedefTaslak, setTopluHedefTaslak] = useState("5");
   const [topluHedefHata, setTopluHedefHata] = useState<string | null>(null);
@@ -777,10 +823,28 @@ function Index() {
         <div className="mb-3 grid grid-cols-2 gap-3">
           <OzetKart etiket={tr("toplamTalebe")} deger={ozet.toplam} />
           <OzetKart
-            etiket={`${tr("ders")} (${tr("haftaGunUzun")[seciliGun]})`}
+            etiket={`${tr(seciliDers === "kuran" ? "dersKuranKisa" : seciliDers === "fikih" ? "dersFikihKisa" : "dersHadisKisa")} (${tr("haftaGunUzun")[seciliGun]})`}
             deger={`${ozet.kiraatSayi}/${ozet.toplam}`}
             onClick={() => setVermediAcik(true)}
           />
+        </div>
+
+        <div className="mb-3 grid grid-cols-3 gap-1 rounded-md border border-border/60 bg-secondary/30 p-1">
+          {(["kuran", "fikih", "hadis"] as const).map((d) => (
+            <button
+              key={d}
+              type="button"
+              onClick={() => setSeciliDers(d)}
+              className={`rounded px-2 py-1.5 text-xs font-medium transition-colors sm:text-sm ${
+                seciliDers === d
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+              title={tr(d === "kuran" ? "dersKuran" : d === "fikih" ? "dersFikih" : "dersHadis")}
+            >
+              {tr(d === "kuran" ? "dersKuranKisa" : d === "fikih" ? "dersFikihKisa" : "dersHadisKisa")}
+            </button>
+          ))}
         </div>
 
         <div className="mb-6 flex justify-end">
@@ -789,7 +853,7 @@ function Index() {
           </Button>
         </div>
 
-        {hocaModu && (
+        {hocaModu && seciliDers === "kuran" && (
           <div className="mb-3 flex flex-wrap items-center gap-2 rounded-md border border-border/60 bg-secondary/30 px-3 py-2">
             <span className="text-xs uppercase tracking-wider text-muted-foreground">
               {tr("topluHedef")}
@@ -880,9 +944,17 @@ function Index() {
                       </SelectContent>
                     </Select>
                   </TableHead>
-                  <TableHead className="px-2 pr-3 text-center text-xs sm:px-4 sm:text-sm">{tr("sf")}</TableHead>
-                  <TableHead className="px-2 pl-3 text-center text-xs sm:px-4 sm:text-sm">{tr("cuz")}</TableHead>
-                  <TableHead className="px-1 text-center text-xs sm:px-4 sm:text-sm">{tr("hedef")}</TableHead>
+                  {seciliDers === "kuran" ? (
+                    <>
+                      <TableHead className="px-2 pr-3 text-center text-xs sm:px-4 sm:text-sm">{tr("sf")}</TableHead>
+                      <TableHead className="px-2 pl-3 text-center text-xs sm:px-4 sm:text-sm">{tr("cuz")}</TableHead>
+                      <TableHead className="px-1 text-center text-xs sm:px-4 sm:text-sm">{tr("hedef")}</TableHead>
+                    </>
+                  ) : (
+                    <TableHead className="px-2 text-center text-xs sm:px-4 sm:text-sm">
+                      {tr(seciliDers === "fikih" ? "konu" : "hadisNo")}
+                    </TableHead>
+                  )}
                   {hocaModu && (
                     <TableHead className="w-14 px-1 text-right text-xs sm:w-24 sm:px-4 sm:text-sm">{tr("islem")}</TableHead>
                   )}
@@ -908,29 +980,54 @@ function Index() {
                     </TableCell>
                     <TableCell className="px-1 py-2 pr-2 text-center sm:px-4 sm:py-3">
                       <GunDurum
-                        verdi={getKiraatGunler(t, seciliHafta).includes(seciliGun)}
+                        verdi={getDersGunler(t, seciliDers, seciliHafta).includes(seciliGun)}
                         duzenlenebilir={hocaModu}
-                        onToggle={() => kiraatGunToggle(t, seciliGun)}
+                        onToggle={() => dersGunToggle(t, seciliDers, seciliGun)}
                       />
                     </TableCell>
-                    <TableCell className="px-2 pr-3 py-2 text-center text-xs tabular-nums sm:px-4 sm:py-3 sm:text-sm">
-                      <SayfaEditor
-                        talebe={t}
-                        duzenlenebilir={hocaModu}
-                        onKaydet={(yeni) => guncelle(t.id, { sayfa: yeni })}
-                      />
-                    </TableCell>
-                    <TableCell className="px-2 pl-3 py-2 text-center text-xs tabular-nums text-muted-foreground sm:px-4 sm:py-3 sm:text-sm">
-                      {cuzHesapla(t.sayfa)}
-                    </TableCell>
-                    <TableCell className="px-1 py-2 text-center sm:px-4 sm:py-3">
-                      <HedefRozet
-                        talebe={t}
-                        yapilan={hafta}
-                        hedef={t.hedefHaftalik}
-                        bazSayfa={haftaBazSayfa(t, seciliHafta)}
-                      />
-                    </TableCell>
+                    {seciliDers === "kuran" ? (
+                      <>
+                        <TableCell className="px-2 pr-3 py-2 text-center text-xs tabular-nums sm:px-4 sm:py-3 sm:text-sm">
+                          <SayfaEditor
+                            talebe={t}
+                            duzenlenebilir={hocaModu}
+                            onKaydet={(yeni) => guncelle(t.id, { sayfa: yeni })}
+                          />
+                        </TableCell>
+                        <TableCell className="px-2 pl-3 py-2 text-center text-xs tabular-nums text-muted-foreground sm:px-4 sm:py-3 sm:text-sm">
+                          {cuzHesapla(t.sayfa)}
+                        </TableCell>
+                        <TableCell className="px-1 py-2 text-center sm:px-4 sm:py-3">
+                          <HedefRozet
+                            talebe={t}
+                            yapilan={hafta}
+                            hedef={t.hedefHaftalik}
+                            bazSayfa={haftaBazSayfa(t, seciliHafta)}
+                          />
+                        </TableCell>
+                      </>
+                    ) : (
+                      <TableCell className="px-2 py-2 text-center text-xs tabular-nums sm:px-4 sm:py-3 sm:text-sm">
+                        <SayiEditor
+                          deger={
+                            seciliDers === "fikih"
+                              ? (t.fikihKonu ?? 1)
+                              : (t.hadisNo ?? 1)
+                          }
+                          max={seciliDers === "hadis" ? 42 : 200}
+                          ekKisa={seciliDers === "hadis" ? "/42" : ""}
+                          duzenlenebilir={hocaModu}
+                          onKaydet={(n) =>
+                            void talebeGuncelle(
+                              t.id,
+                              seciliDers === "fikih"
+                                ? { fikihKonu: n }
+                                : { hadisNo: n },
+                            )
+                          }
+                        />
+                      </TableCell>
+                    )}
                     {hocaModu && (
                       <TableCell className="px-1 py-2 text-right sm:px-4 sm:py-3">
                         <div className="flex justify-end gap-0.5 sm:gap-1">
@@ -959,7 +1056,7 @@ function Index() {
                 {!yuklendi && talebeler.length === 0 && (
                   <TableRow>
                     <TableCell
-                      colSpan={hocaModu ? 8 : 7}
+                      colSpan={(seciliDers === "kuran" ? 6 : 4) + (hocaModu ? 1 : 0)}
                       className="py-10 text-center text-sm text-muted-foreground"
                     >
                       <span className="inline-flex items-center gap-2">
@@ -972,7 +1069,7 @@ function Index() {
                 {yuklendi && yuklemeHata && (
                   <TableRow>
                     <TableCell
-                      colSpan={hocaModu ? 8 : 7}
+                      colSpan={(seciliDers === "kuran" ? 6 : 4) + (hocaModu ? 1 : 0)}
                       className="py-10 text-center text-sm text-destructive"
                     >
                       {tr("baglantiHatasi")}: {yuklemeHata}
@@ -982,7 +1079,7 @@ function Index() {
                 {yuklendi && !yuklemeHata && talebeler.length === 0 && (
                   <TableRow>
                     <TableCell
-                      colSpan={hocaModu ? 8 : 7}
+                      colSpan={(seciliDers === "kuran" ? 6 : 4) + (hocaModu ? 1 : 0)}
                       className="py-10 text-center text-sm text-muted-foreground"
                     >
                       {tr("henuzTalebeYok")}
@@ -1008,7 +1105,7 @@ function Index() {
         onClose={() => setVermediAcik(false)}
         gunAdi={tr("haftaGunUzun")[seciliGun]}
         talebeler={talebeler.filter(
-          (t) => !getKiraatGunler(t, seciliHafta).includes(seciliGun),
+          (t) => !getDersGunler(t, seciliDers, seciliHafta).includes(seciliGun),
         )}
         onTalebe={(t) => {
           setVermediAcik(false);
@@ -2158,5 +2255,80 @@ function SayfaCarki({
         </div>
       </div>
     </div>
+  );
+}
+
+function SayiEditor({
+  deger,
+  max,
+  ekKisa,
+  duzenlenebilir,
+  onKaydet,
+}: {
+  deger: number;
+  max: number;
+  ekKisa?: string;
+  duzenlenebilir: boolean;
+  onKaydet: (n: number) => void;
+}) {
+  const [acik, setAcik] = useState(false);
+  const [taslak, setTaslak] = useState<string>(String(deger));
+
+  useEffect(() => {
+    if (acik) setTaslak(String(deger));
+  }, [acik, deger]);
+
+  if (!duzenlenebilir) {
+    return (
+      <span>
+        {deger}
+        {ekKisa ? <span className="text-muted-foreground">{ekKisa}</span> : null}
+      </span>
+    );
+  }
+
+  const kaydet = () => {
+    const n = Number(taslak);
+    if (!Number.isFinite(n)) return;
+    const sinirli = Math.max(1, Math.min(max, Math.round(n)));
+    onKaydet(sinirli);
+    setAcik(false);
+  };
+
+  return (
+    <Popover open={acik} onOpenChange={setAcik}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="rounded-md px-2 py-1 font-medium hover:bg-muted/60"
+        >
+          {deger}
+          {ekKisa ? <span className="text-muted-foreground">{ekKisa}</span> : null}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[200px] p-3" align="center">
+        <div className="flex items-center gap-2">
+          <Input
+            type="number"
+            inputMode="numeric"
+            min={1}
+            max={max}
+            value={taslak}
+            onChange={(e) => setTaslak(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") kaydet();
+            }}
+            autoFocus
+            className="h-9 text-center text-base"
+          />
+          <Button size="sm" onClick={kaydet}>
+            <Check className="h-4 w-4" />
+          </Button>
+        </div>
+        <p className="mt-1 text-center text-[11px] text-muted-foreground">
+          1 - {max}
+        </p>
+      </PopoverContent>
+    </Popover>
   );
 }
