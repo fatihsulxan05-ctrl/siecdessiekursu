@@ -980,29 +980,54 @@ function Index() {
                     </TableCell>
                     <TableCell className="px-1 py-2 pr-2 text-center sm:px-4 sm:py-3">
                       <GunDurum
-                        verdi={getKiraatGunler(t, seciliHafta).includes(seciliGun)}
+                        verdi={getDersGunler(t, seciliDers, seciliHafta).includes(seciliGun)}
                         duzenlenebilir={hocaModu}
-                        onToggle={() => kiraatGunToggle(t, seciliGun)}
+                        onToggle={() => dersGunToggle(t, seciliDers, seciliGun)}
                       />
                     </TableCell>
-                    <TableCell className="px-2 pr-3 py-2 text-center text-xs tabular-nums sm:px-4 sm:py-3 sm:text-sm">
-                      <SayfaEditor
-                        talebe={t}
-                        duzenlenebilir={hocaModu}
-                        onKaydet={(yeni) => guncelle(t.id, { sayfa: yeni })}
-                      />
-                    </TableCell>
-                    <TableCell className="px-2 pl-3 py-2 text-center text-xs tabular-nums text-muted-foreground sm:px-4 sm:py-3 sm:text-sm">
-                      {cuzHesapla(t.sayfa)}
-                    </TableCell>
-                    <TableCell className="px-1 py-2 text-center sm:px-4 sm:py-3">
-                      <HedefRozet
-                        talebe={t}
-                        yapilan={hafta}
-                        hedef={t.hedefHaftalik}
-                        bazSayfa={haftaBazSayfa(t, seciliHafta)}
-                      />
-                    </TableCell>
+                    {seciliDers === "kuran" ? (
+                      <>
+                        <TableCell className="px-2 pr-3 py-2 text-center text-xs tabular-nums sm:px-4 sm:py-3 sm:text-sm">
+                          <SayfaEditor
+                            talebe={t}
+                            duzenlenebilir={hocaModu}
+                            onKaydet={(yeni) => guncelle(t.id, { sayfa: yeni })}
+                          />
+                        </TableCell>
+                        <TableCell className="px-2 pl-3 py-2 text-center text-xs tabular-nums text-muted-foreground sm:px-4 sm:py-3 sm:text-sm">
+                          {cuzHesapla(t.sayfa)}
+                        </TableCell>
+                        <TableCell className="px-1 py-2 text-center sm:px-4 sm:py-3">
+                          <HedefRozet
+                            talebe={t}
+                            yapilan={hafta}
+                            hedef={t.hedefHaftalik}
+                            bazSayfa={haftaBazSayfa(t, seciliHafta)}
+                          />
+                        </TableCell>
+                      </>
+                    ) : (
+                      <TableCell className="px-2 py-2 text-center text-xs tabular-nums sm:px-4 sm:py-3 sm:text-sm">
+                        <SayiEditor
+                          deger={
+                            seciliDers === "fikih"
+                              ? (t.fikihKonu ?? 1)
+                              : (t.hadisNo ?? 1)
+                          }
+                          max={seciliDers === "hadis" ? 42 : 200}
+                          ekKisa={seciliDers === "hadis" ? "/42" : ""}
+                          duzenlenebilir={hocaModu}
+                          onKaydet={(n) =>
+                            void talebeGuncelle(
+                              t.id,
+                              seciliDers === "fikih"
+                                ? { fikihKonu: n }
+                                : { hadisNo: n },
+                            )
+                          }
+                        />
+                      </TableCell>
+                    )}
                     {hocaModu && (
                       <TableCell className="px-1 py-2 text-right sm:px-4 sm:py-3">
                         <div className="flex justify-end gap-0.5 sm:gap-1">
