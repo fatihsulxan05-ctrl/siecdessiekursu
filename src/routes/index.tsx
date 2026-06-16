@@ -60,6 +60,7 @@ import {
   type Talebe,
   type SayfaKaydi,
   type KiraatYonu,
+  type Ders,
 } from "@/lib/talebeler";
 import { dosyaFotoDataUrl, bashHarfler } from "@/lib/foto";
 import { Textarea } from "@/components/ui/textarea";
