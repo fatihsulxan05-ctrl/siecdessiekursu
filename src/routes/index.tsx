@@ -823,10 +823,28 @@ function Index() {
         <div className="mb-3 grid grid-cols-2 gap-3">
           <OzetKart etiket={tr("toplamTalebe")} deger={ozet.toplam} />
           <OzetKart
-            etiket={`${tr("ders")} (${tr("haftaGunUzun")[seciliGun]})`}
+            etiket={`${tr(seciliDers === "kuran" ? "dersKuranKisa" : seciliDers === "fikih" ? "dersFikihKisa" : "dersHadisKisa")} (${tr("haftaGunUzun")[seciliGun]})`}
             deger={`${ozet.kiraatSayi}/${ozet.toplam}`}
             onClick={() => setVermediAcik(true)}
           />
+        </div>
+
+        <div className="mb-3 grid grid-cols-3 gap-1 rounded-md border border-border/60 bg-secondary/30 p-1">
+          {(["kuran", "fikih", "hadis"] as const).map((d) => (
+            <button
+              key={d}
+              type="button"
+              onClick={() => setSeciliDers(d)}
+              className={`rounded px-2 py-1.5 text-xs font-medium transition-colors sm:text-sm ${
+                seciliDers === d
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+              title={tr(d === "kuran" ? "dersKuran" : d === "fikih" ? "dersFikih" : "dersHadis")}
+            >
+              {tr(d === "kuran" ? "dersKuranKisa" : d === "fikih" ? "dersFikihKisa" : "dersHadisKisa")}
+            </button>
+          ))}
         </div>
 
         <div className="mb-6 flex justify-end">
