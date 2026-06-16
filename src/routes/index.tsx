@@ -944,9 +944,17 @@ function Index() {
                       </SelectContent>
                     </Select>
                   </TableHead>
-                  <TableHead className="px-2 pr-3 text-center text-xs sm:px-4 sm:text-sm">{tr("sf")}</TableHead>
-                  <TableHead className="px-2 pl-3 text-center text-xs sm:px-4 sm:text-sm">{tr("cuz")}</TableHead>
-                  <TableHead className="px-1 text-center text-xs sm:px-4 sm:text-sm">{tr("hedef")}</TableHead>
+                  {seciliDers === "kuran" ? (
+                    <>
+                      <TableHead className="px-2 pr-3 text-center text-xs sm:px-4 sm:text-sm">{tr("sf")}</TableHead>
+                      <TableHead className="px-2 pl-3 text-center text-xs sm:px-4 sm:text-sm">{tr("cuz")}</TableHead>
+                      <TableHead className="px-1 text-center text-xs sm:px-4 sm:text-sm">{tr("hedef")}</TableHead>
+                    </>
+                  ) : (
+                    <TableHead className="px-2 text-center text-xs sm:px-4 sm:text-sm">
+                      {tr(seciliDers === "fikih" ? "konu" : "hadisNo")}
+                    </TableHead>
+                  )}
                   {hocaModu && (
                     <TableHead className="w-14 px-1 text-right text-xs sm:w-24 sm:px-4 sm:text-sm">{tr("islem")}</TableHead>
                   )}
