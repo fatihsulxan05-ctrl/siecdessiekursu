@@ -1056,7 +1056,7 @@ function Index() {
                 {!yuklendi && talebeler.length === 0 && (
                   <TableRow>
                     <TableCell
-                      colSpan={hocaModu ? 8 : 7}
+                      colSpan={(seciliDers === "kuran" ? 6 : 4) + (hocaModu ? 1 : 0)}
                       className="py-10 text-center text-sm text-muted-foreground"
                     >
                       <span className="inline-flex items-center gap-2">
@@ -1069,7 +1069,7 @@ function Index() {
                 {yuklendi && yuklemeHata && (
                   <TableRow>
                     <TableCell
-                      colSpan={hocaModu ? 8 : 7}
+                      colSpan={(seciliDers === "kuran" ? 6 : 4) + (hocaModu ? 1 : 0)}
                       className="py-10 text-center text-sm text-destructive"
                     >
                       {tr("baglantiHatasi")}: {yuklemeHata}
@@ -1079,7 +1079,7 @@ function Index() {
                 {yuklendi && !yuklemeHata && talebeler.length === 0 && (
                   <TableRow>
                     <TableCell
-                      colSpan={hocaModu ? 8 : 7}
+                      colSpan={(seciliDers === "kuran" ? 6 : 4) + (hocaModu ? 1 : 0)}
                       className="py-10 text-center text-sm text-muted-foreground"
                     >
                       {tr("henuzTalebeYok")}
