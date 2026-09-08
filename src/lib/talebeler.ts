@@ -23,7 +23,7 @@ export type Talebe = {
   kiraat: boolean;
   kiraatGunler?: Record<string, number[]>;
   sayfa: number;
-  hedefHaftalik: number;
+  hedefHaftalik?: number;
   gecmis: SayfaKaydi[];
   sira?: number;
   fotoUrl?: string;

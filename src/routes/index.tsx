@@ -48,7 +48,6 @@ import {
   User as UserIcon,
   Eye,
   EyeOff,
-  Languages,
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
@@ -56,7 +55,6 @@ import {
   talebeEkle,
   talebeGuncelle,
   talebeSil,
-  topluHedefGuncelle,
   type Talebe,
   type SayfaKaydi,
   type KiraatYonu,
@@ -87,9 +85,8 @@ const HOCA_AD_KEY = "talebe-takip-hoca-ad";
 const TALEBE_CACHE_KEY = "talebe-takip-cache-v1";
 const HOCA_PAROLA_KEY = "talebe-takip-hoca-parola";
 const VARSAYILAN_PAROLA = "siec099852";
-const DIL_KEY = "talebe-takip-dil";
 
-type Dil = "tr" | "am";
+type Dil = "tr";
 
 const SOZLUK = {
   tr: {
@@ -213,127 +210,6 @@ const SOZLUK = {
       "Pazar",
     ],
   },
-  am: {
-    baslik: "Siec Dessie Medrese",
-    altBaslik: "የተማሪ ስኬት ፓነል",
-    girisYap: "ግባ",
-    girisYapKisa: "ግባ",
-    hocaefendiGirisi: "የመምህር መግቢያ",
-    cikisYap: "ውጣ",
-    duzenleme: "የማስተካከያ ሁነታ",
-    parola: "የይለፍ ቃል",
-    parolaDegistir: "የይለፍ ቃል ቀይር",
-    yeniParolaBelirle: "አዲስ የይለፍ ቃልዎን ያስገቡ።",
-    mevcutParolaLbl: "የአሁኑ የይለፍ ቃል",
-    yeniParolaLbl: "አዲስ የይለፍ ቃል",
-    yeniParolaTekrarLbl: "አዲስ የይለፍ ቃል (እንደገና)",
-    degistir: "ቀይር",
-    iptal: "ይቅር",
-    kaydet: "አስቀምጥ",
-    kapat: "ዝጋ",
-    talebeEkle: "ተማሪ ጨምር",
-    haftaRaporu: "የሳምንቱ ሪፖርት",
-    haftaninRaporu: "የሳምንቱ ሪፖርት",
-    vermedi: "አላስረከበም",
-    verdi: "አስረክቧል",
-    hocaefendi: "መምህር",
-    duzenlemeModu: "የማስተካከያ ሁነታ",
-    topluHedef: "ለሁሉም ግብ",
-    sfHafta: "ገጽ / ሳምንት",
-    tumuneUygula: "ለሁሉም ተግብር",
-    buHafta: "ይህ ሳምንት",
-    gecenHafta: "ያለፈው ሳምንት",
-    gelecekHafta: "የሚቀጥለው ሳምንት",
-    haftaOnce: "ሳምንት በፊት",
-    haftaSonra: "ሳምንት በኋላ",
-    oncekiHafta: "ቀዳሚ ሳምንት",
-    sonrakiHafta: "ቀጣይ ሳምንት",
-    toplamTalebe: "ጠቅላላ ተማሪ",
-    ders: "ትምህርት",
-    talebe: "ተማሪ",
-    sf: "ገጽ",
-    cuz: "ጁዝ",
-    hedef: "ግብ",
-    islem: "ድርጊት",
-    verilerYukleniyor: "መረጃዎች በመጫን ላይ…",
-    baglantiHatasi: "የግንኙነት ስህተት",
-    henuzTalebeYok: "እስካሁን ተማሪ የለም።",
-    parolaGiriniz: "ለማስተካከል የይለፍ ቃል ያስገቡ።",
-    parolaHatali: "የተሳሳተ የይለፍ ቃል",
-    mevcutParolaHatali: "የአሁኑ የይለፍ ቃል የተሳሳተ ነው",
-    yeniParolaKisa: "አዲሱ የይለፍ ቃል ቢያንስ 3 ቁምፊ መሆን አለበት",
-    yeniParolaUyumsuz: "አዲሶቹ የይለፍ ቃላት አይዛመዱም",
-    talebeProfili: "የተማሪ መገለጫ",
-    fotoVeKisisel: "ፎቶ እና ግላዊ መረጃዎች።",
-    fotoBuyut: "ፎቶውን አስፋ",
-    fotoYukle: "ፎቶ ስቀል",
-    fotoKaldir: "ፎቶውን አስወግድ",
-    yuklemeBasarisiz: "መጫን አልተሳካም",
-    sayfa: "ገጽ",
-    sayfaKisa: "ገጽ",
-    cuzKisa: "ጁዝ",
-    cuzTam: "ኛ ጁዝ",
-    hedefSf: "ግብ",
-    sfPerHafta: "ገጽ/ሳምንት",
-    telefon: "ስልክ",
-    notlar: "ማስታወሻዎች",
-    ara: "ደውል",
-    isimVeIlerleme: "ስም እና እድገት",
-    fotoBuyutGorunum: "የተስፋፋ ፎቶ እይታ።",
-    fotoBaslik: "ፎቶ",
-    talebeyiDuzenle: "ተማሪን አስተካክል",
-    isimDersIlerleme: "ስም፣ ትምህርት እና የቁርዓን እድገት።",
-    isim: "ስም",
-    kiraatYonu: "የቂራአት አቅጣጫ",
-    alttan: "ከታች (ገጽ 1 → 604)",
-    ustten: "ከላይ (ገጽ 604 → 1)",
-    hedefHesabiYon: "የግቡ ስሌት በዚህ አቅጣጫ ይከናወናል።",
-    kiraatGunIpucu: "የቂራአት ቀናትን በዋናው ሰንጠረዥ ውስጥ ካሉ የቀን ምልክቶች ያስቀምጡ።",
-    sayfaAralik: "ገጽ (1-604)",
-    cuzOtomatik: "ጁዝ (ራሱ-ሰራሽ)",
-    haftalikHedefSayfa: "ሳምንታዊ ግብ (ገጽ)",
-    hedefSifirIpucu: "0 ብታስገቡ የግብ ክትትል ይቆማል።",
-    sayfaBosOlamaz: "ገጽ ባዶ መሆን አይችልም",
-    yalnizcaRakam: "ቁጥር ብቻ ያስገቡ",
-    sayfaAralikHata: "ገጽ ከ1 እስከ 604 መሆን አለበት",
-    hedefBosOlamaz: "ግብ ባዶ መሆን አይችልም",
-    hedefAralikHata: "ግብ ከ0 እስከ 200 መሆን አለበት",
-    aralikHata: "ከ0 እስከ 200 መሆን አለበት",
-    parolayiGoster: "የይለፍ ቃል አሳይ",
-    parolayiGizle: "የይለፍ ቃል ደብቅ",
-    dersVermeyenler: "ያላስረከቡ",
-    talebeIsaretliDegil: "ተማሪ ለዛሬ አልተመዘገበም።",
-    hepsiVerdi: "ዛሬ ሁሉም ተማሪዎች አስረክበዋል። 🎉",
-    geride: "ወደ ኋላ",
-    hedefte: "ግብ ላይ",
-    yolda: "በመንገድ ላይ",
-    hedefSayfaEtiket: "የግብ ገጽ",
-    enIyiler: "🌟 ምርጥ አስረካቢዎች (4+ ቀን)",
-    ortalar: "⚖️ መካከለኛ (2-3 ቀን)",
-    zayiflar: "⚠️ ደካማ (0-1 ቀን)",
-    gun7: "/7 ቀን",
-    sayfayiDuzenle: "ገጹን አስተካክል",
-    digerDil: "Türkçe",
-    dersKuran: "ቁርዓን",
-    dersFikih: "ፊቅህ (ሰፊነቱ ነጃህ)",
-    dersHadis: "ሐዲስ (አርበዒን ነወዊ)",
-    dersKuranKisa: "ቁርዓን",
-    dersFikihKisa: "ፊቅህ",
-    dersHadisKisa: "ሐዲስ",
-    konu: "ምዕራፍ",
-    hadisNo: "የሐዲስ ቁ.",
-    dersSecimi: "ትምህርት",
-    haftaGun: ["ሰኞ", "ማክሰ", "ረቡዕ", "ሐሙስ", "ዓርብ", "ቅዳሜ", "እሑድ"],
-    haftaGunUzun: [
-      "ሰኞ",
-      "ማክሰኞ",
-      "ረቡዕ",
-      "ሐሙስ",
-      "ዓርብ",
-      "ቅዳሜ",
-      "እሑድ",
-    ],
-  },
 } as const;
 
 type SozlukAnahtar = keyof typeof SOZLUK.tr;
@@ -398,15 +274,6 @@ function ilerleme(t: Talebe, baslangic: number, bitis: number) {
   return t.yon === "ustten"
     ? Math.max(0, baz - son)
     : Math.max(0, son - baz);
-}
-
-function haftaBazSayfa(t: Talebe, baslangic: number) {
-  return sayfaOnceFn(t, baslangic);
-}
-
-function hedefSayfaHesap(t: Talebe, bazSayfa: number, hedef: number) {
-  if (t.yon === "ustten") return Math.max(1, bazSayfa - hedef);
-  return Math.min(604, bazSayfa + hedef);
 }
 
 function haftaEtiket(baslangic: number) {
@@ -601,7 +468,6 @@ function Index() {
       isim: `Talebe ${yeniNo}`,
       kiraat: false,
       sayfa: 1,
-      hedefHaftalik: 5,
       gecmis: [{ t: Date.now(), sayfa: 1 }],
       sira: enBuyukSira + 1,
       yon: "alttan",
@@ -627,26 +493,6 @@ function Index() {
     return { toplam, kiraatSayi };
   }, [talebeler, seciliHafta, seciliGun, seciliDers]);
 
-  const [topluHedefTaslak, setTopluHedefTaslak] = useState("5");
-  const [topluHedefHata, setTopluHedefHata] = useState<string | null>(null);
-
-  const topluHedefUygula = () => {
-    const d = topluHedefTaslak.trim();
-    if (!/^\d+$/.test(d)) {
-      setTopluHedefHata(tr("yalnizcaRakam"));
-      return;
-    }
-    const n = Number(d);
-    if (n < 0 || n > 200) {
-      setTopluHedefHata(tr("aralikHata"));
-      return;
-    }
-    setTopluHedefHata(null);
-    void topluHedefGuncelle(
-      talebeler.map((t) => t.id),
-      n,
-    );
-  };
 
   const girisYap = () => {
     if (parolaTaslak === mevcutParola()) {
@@ -1603,9 +1449,6 @@ function DuzenleDiyalog({
                 <SelectItem value="ustten">{t("ustten")}</SelectItem>
               </SelectContent>
             </Select>
-            <p className="text-xs text-muted-foreground">
-              {t("hedefHesabiYon")}
-            </p>
           </div>
 
           <p className="text-xs text-muted-foreground">
