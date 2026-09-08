@@ -479,7 +479,7 @@ function Index() {
   const [hocaTaslak, setHocaTaslak] = useState(hoca);
   const [seciliHafta, setSeciliHafta] = useState<number>(() => haftaBaslastik());
   const [seciliGun, setSeciliGun] = useState<number>(() => bugununGunu());
-  const [seciliDers, setSeciliDers] = useState<Ders>("kuran");
+  const seciliDers: Ders = "kuran";
 
   const [parolaDegistirAcik, setParolaDegistirAcik] = useState(false);
   const [eskiParola, setEskiParola] = useState("");
@@ -490,22 +490,7 @@ function Index() {
   const [vermediAcik, setVermediAcik] = useState(false);
   const [raporAcik, setRaporAcik] = useState(false);
 
-  const [dil, setDil] = useState<Dil>("tr");
-  useEffect(() => {
-    try {
-      const d = localStorage.getItem(DIL_KEY);
-      if (d === "am" || d === "tr") setDil(d);
-    } catch {}
-  }, []);
-  useEffect(() => {
-    try {
-      localStorage.setItem(DIL_KEY, dil);
-    } catch {}
-    if (typeof document !== "undefined") {
-      document.documentElement.lang = dil === "am" ? "am" : "tr";
-      document.documentElement.dir = "ltr";
-    }
-  }, [dil]);
+  const dil: Dil = "tr";
   const tr = <K extends SozlukAnahtar>(k: K): (typeof SOZLUK)["tr"][K] => {
     const v = (SOZLUK[dil] as typeof SOZLUK.tr)[k];
     return (v ?? SOZLUK.tr[k]) as (typeof SOZLUK)["tr"][K];
@@ -708,16 +693,6 @@ function Index() {
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-6xl px-2 py-4 sm:px-6 sm:py-12">
         <header className="relative mb-6 flex flex-col items-center gap-3 text-center sm:mb-12 sm:gap-5">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => setDil(dil === "tr" ? "am" : "tr")}
-            className="absolute right-0 top-0 h-8 gap-1.5 px-2 text-xs"
-            title={tr("digerDil")}
-          >
-            <Languages className="h-3.5 w-3.5" />
-            {tr("digerDil")}
-          </Button>
           <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary sm:h-20 sm:w-20">
             <GraduationCap className="h-7 w-7 sm:h-10 sm:w-10" />
           </div>
@@ -829,57 +804,11 @@ function Index() {
           />
         </div>
 
-        <div className="mb-3 grid grid-cols-3 gap-1 rounded-md border border-border/60 bg-secondary/30 p-1">
-          {(["kuran", "fikih", "hadis"] as const).map((d) => (
-            <button
-              key={d}
-              type="button"
-              onClick={() => setSeciliDers(d)}
-              className={`rounded px-2 py-1.5 text-xs font-medium transition-colors sm:text-sm ${
-                seciliDers === d
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-              title={tr(d === "kuran" ? "dersKuran" : d === "fikih" ? "dersFikih" : "dersHadis")}
-            >
-              {tr(d === "kuran" ? "dersKuranKisa" : d === "fikih" ? "dersFikihKisa" : "dersHadisKisa")}
-            </button>
-          ))}
-        </div>
-
         <div className="mb-6 flex justify-end">
           <Button size="sm" variant="outline" onClick={() => setRaporAcik(true)}>
             <CalendarDays className="h-4 w-4" /> {tr("haftaninRaporu")}
           </Button>
         </div>
-
-        {hocaModu && seciliDers === "kuran" && (
-          <div className="mb-3 flex flex-wrap items-center gap-2 rounded-md border border-border/60 bg-secondary/30 px-3 py-2">
-            <span className="text-xs uppercase tracking-wider text-muted-foreground">
-              {tr("topluHedef")}
-            </span>
-            <Input
-              type="number"
-              inputMode="numeric"
-              min={0}
-              max={200}
-              value={topluHedefTaslak}
-              onChange={(e) => {
-                setTopluHedefTaslak(e.target.value);
-                setTopluHedefHata(null);
-              }}
-              className="h-8 w-24"
-              aria-invalid={topluHedefHata ? true : undefined}
-            />
-            <span className="text-xs text-muted-foreground">{tr("sfHafta")}</span>
-            <Button size="sm" onClick={topluHedefUygula}>
-              {tr("tumuneUygula")}
-            </Button>
-            {topluHedefHata && (
-              <span className="text-xs text-destructive">{topluHedefHata}</span>
-            )}
-          </div>
-        )}
 
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-md border border-border/60 bg-secondary/30 px-3 py-2">
           <div className="flex items-center gap-2 text-sm">
@@ -944,17 +873,8 @@ function Index() {
                       </SelectContent>
                     </Select>
                   </TableHead>
-                  {seciliDers === "kuran" ? (
-                    <>
-                      <TableHead className="px-2 pr-3 text-center text-xs sm:px-4 sm:text-sm">{tr("sf")}</TableHead>
-                      <TableHead className="px-2 pl-3 text-center text-xs sm:px-4 sm:text-sm">{tr("cuz")}</TableHead>
-                      <TableHead className="px-1 text-center text-xs sm:px-4 sm:text-sm">{tr("hedef")}</TableHead>
-                    </>
-                  ) : (
-                    <TableHead className="px-2 text-center text-xs sm:px-4 sm:text-sm">
-                      {tr(seciliDers === "fikih" ? "konu" : "hadisNo")}
-                    </TableHead>
-                  )}
+                  <TableHead className="px-2 pr-3 text-center text-xs sm:px-4 sm:text-sm">{tr("sf")}</TableHead>
+                  <TableHead className="px-2 pl-3 text-center text-xs sm:px-4 sm:text-sm">{tr("cuz")}</TableHead>
                   {hocaModu && (
                     <TableHead className="w-14 px-1 text-right text-xs sm:w-24 sm:px-4 sm:text-sm">{tr("islem")}</TableHead>
                   )}
@@ -985,49 +905,16 @@ function Index() {
                         onToggle={() => dersGunToggle(t, seciliDers, seciliGun)}
                       />
                     </TableCell>
-                    {seciliDers === "kuran" ? (
-                      <>
-                        <TableCell className="px-2 pr-3 py-2 text-center text-xs tabular-nums sm:px-4 sm:py-3 sm:text-sm">
-                          <SayfaEditor
-                            talebe={t}
-                            duzenlenebilir={hocaModu}
-                            onKaydet={(yeni) => guncelle(t.id, { sayfa: yeni })}
-                          />
-                        </TableCell>
-                        <TableCell className="px-2 pl-3 py-2 text-center text-xs tabular-nums text-muted-foreground sm:px-4 sm:py-3 sm:text-sm">
-                          {cuzHesapla(t.sayfa)}
-                        </TableCell>
-                        <TableCell className="px-1 py-2 text-center sm:px-4 sm:py-3">
-                          <HedefRozet
-                            talebe={t}
-                            yapilan={hafta}
-                            hedef={t.hedefHaftalik}
-                            bazSayfa={haftaBazSayfa(t, seciliHafta)}
-                          />
-                        </TableCell>
-                      </>
-                    ) : (
-                      <TableCell className="px-2 py-2 text-center text-xs tabular-nums sm:px-4 sm:py-3 sm:text-sm">
-                        <SayiEditor
-                          deger={
-                            seciliDers === "fikih"
-                              ? (t.fikihKonu ?? 1)
-                              : (t.hadisNo ?? 1)
-                          }
-                          max={seciliDers === "hadis" ? 42 : 200}
-                          ekKisa={seciliDers === "hadis" ? "/42" : ""}
-                          duzenlenebilir={hocaModu}
-                          onKaydet={(n) =>
-                            void talebeGuncelle(
-                              t.id,
-                              seciliDers === "fikih"
-                                ? { fikihKonu: n }
-                                : { hadisNo: n },
-                            )
-                          }
-                        />
-                      </TableCell>
-                    )}
+                    <TableCell className="px-2 pr-3 py-2 text-center text-xs tabular-nums sm:px-4 sm:py-3 sm:text-sm">
+                      <SayfaEditor
+                        talebe={t}
+                        duzenlenebilir={hocaModu}
+                        onKaydet={(yeni) => guncelle(t.id, { sayfa: yeni })}
+                      />
+                    </TableCell>
+                    <TableCell className="px-2 pl-3 py-2 text-center text-xs tabular-nums text-muted-foreground sm:px-4 sm:py-3 sm:text-sm">
+                      {cuzHesapla(t.sayfa)}
+                    </TableCell>
                     {hocaModu && (
                       <TableCell className="px-1 py-2 text-right sm:px-4 sm:py-3">
                         <div className="flex justify-end gap-0.5 sm:gap-1">
@@ -1056,7 +943,7 @@ function Index() {
                 {!yuklendi && talebeler.length === 0 && (
                   <TableRow>
                     <TableCell
-                      colSpan={(seciliDers === "kuran" ? 6 : 4) + (hocaModu ? 1 : 0)}
+                      colSpan={5 + (hocaModu ? 1 : 0)}
                       className="py-10 text-center text-sm text-muted-foreground"
                     >
                       <span className="inline-flex items-center gap-2">
@@ -1069,7 +956,7 @@ function Index() {
                 {yuklendi && yuklemeHata && (
                   <TableRow>
                     <TableCell
-                      colSpan={(seciliDers === "kuran" ? 6 : 4) + (hocaModu ? 1 : 0)}
+                      colSpan={5 + (hocaModu ? 1 : 0)}
                       className="py-10 text-center text-sm text-destructive"
                     >
                       {tr("baglantiHatasi")}: {yuklemeHata}
@@ -1079,7 +966,7 @@ function Index() {
                 {yuklendi && !yuklemeHata && talebeler.length === 0 && (
                   <TableRow>
                     <TableCell
-                      colSpan={(seciliDers === "kuran" ? 6 : 4) + (hocaModu ? 1 : 0)}
+                      colSpan={5 + (hocaModu ? 1 : 0)}
                       className="py-10 text-center text-sm text-muted-foreground"
                     >
                       {tr("henuzTalebeYok")}
@@ -1342,8 +1229,6 @@ function ProfilDiyalog({
     }
   };
 
-  const haftalikHedef = talebe.hedefHaftalik;
-
   return (
     <Dialog open={!!talebe} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="sm:max-w-md">
@@ -1389,8 +1274,7 @@ function ProfilDiyalog({
           <div className="text-center">
             <div className="text-lg font-semibold">{talebe.isim}</div>
             <div className="text-xs text-muted-foreground">
-              {t("sayfa")} {talebe.sayfa} · {cuzHesapla(talebe.sayfa)}{t("cuzTam")} · {t("hedefSf")}{" "}
-              {haftalikHedef} {t("sfPerHafta")}
+              {t("sayfa")} {talebe.sayfa} · {cuzHesapla(talebe.sayfa)}{t("cuzTam")}
             </div>
           </div>
           {hocaModu && talebe.fotoUrl && (
@@ -1619,48 +1503,6 @@ function IlerlemeRozet({ sayfa }: { sayfa: number }) {
   );
 }
 
-function HedefRozet({
-  talebe,
-  yapilan,
-  hedef,
-  bazSayfa,
-}: {
-  talebe: Talebe;
-  yapilan: number;
-  hedef: number;
-  bazSayfa: number;
-}) {
-  const t = useT();
-  if (!hedef || hedef <= 0) {
-    return <span className="text-xs text-muted-foreground">—</span>;
-  }
-  const hedefSayfa = hedefSayfaHesap(talebe, bazSayfa, hedef);
-  const oran = Math.round((yapilan / hedef) * 100);
-  let renk = "bg-destructive/10 text-destructive";
-  let nokta = "bg-destructive";
-  let etiket: string = t("geride");
-  if (oran >= 100) {
-    renk = "bg-primary/10 text-primary";
-    nokta = "bg-primary";
-    etiket = t("hedefte");
-  } else if (oran >= 50) {
-    renk = "bg-amber-500/15 text-amber-600 dark:text-amber-400";
-    nokta = "bg-amber-500";
-    etiket = t("yolda");
-  }
-  return (
-    <div className="flex flex-col items-center gap-0.5">
-      <span
-        className={`inline-flex items-center gap-1 rounded-full px-1.5 py-0 text-[10px] font-medium leading-tight tabular-nums ${renk}`}
-        title={`${yapilan} / ${hedef} ${t("sayfaKisa")} · ${t("hedefSayfaEtiket")} ${hedefSayfa} · ${etiket}`}
-      >
-        <span className={`h-1 w-1 rounded-full ${nokta}`} />
-        %{oran}
-      </span>
-    </div>
-  );
-}
-
 function DuzenleDiyalog({
   talebe,
   onClose,
@@ -1675,17 +1517,13 @@ function DuzenleDiyalog({
   const [yon, setYon] = useState<KiraatYonu>("alttan");
   const [sayfaTaslak, setSayfaTaslak] = useState("1");
   const [sayfaHata, setSayfaHata] = useState<string | null>(null);
-  const [hedefTaslak, setHedefTaslak] = useState("5");
-  const [hedefHata, setHedefHata] = useState<string | null>(null);
 
   useEffect(() => {
     if (talebe) {
       setIsim(talebe.isim);
       setYon(talebe.yon ?? "alttan");
       setSayfaTaslak(String(talebe.sayfa));
-      setHedefTaslak(String(talebe.hedefHaftalik ?? 5));
       setSayfaHata(null);
-      setHedefHata(null);
     }
   }, [talebe]);
 
@@ -1707,31 +1545,12 @@ function DuzenleDiyalog({
     return n;
   };
 
-  const hedefDogrula = (deger: string): number | null => {
-    if (deger.trim() === "") {
-      setHedefHata(t("hedefBosOlamaz"));
-      return null;
-    }
-    if (!/^\d+$/.test(deger)) {
-      setHedefHata(t("yalnizcaRakam"));
-      return null;
-    }
-    const n = Number(deger);
-    if (n < 0 || n > 200) {
-      setHedefHata(t("hedefAralikHata"));
-      return null;
-    }
-    setHedefHata(null);
-    return n;
-  };
-
   const kaydet = () => {
     const sayfa = sayfaDogrula(sayfaTaslak);
-    const hedef = hedefDogrula(hedefTaslak);
-    if (sayfa === null || hedef === null) return;
+    if (sayfa === null) return;
     const temizIsim = isim.trim().slice(0, 60);
     if (!temizIsim) return;
-    onKaydet({ isim: temizIsim, sayfa, hedefHaftalik: hedef, yon });
+    onKaydet({ isim: temizIsim, sayfa, yon });
   };
 
   const cuz = /^\d+$/.test(sayfaTaslak)
@@ -1825,31 +1644,6 @@ function DuzenleDiyalog({
           </div>
           {sayfaHata && <p className="text-xs text-destructive">{sayfaHata}</p>}
 
-          <div className="space-y-1.5">
-            <Label>{t("haftalikHedefSayfa")}</Label>
-            <Input
-              type="number"
-              inputMode="numeric"
-              min={0}
-              max={200}
-              value={hedefTaslak}
-              onChange={(e) => {
-                setHedefTaslak(e.target.value);
-                hedefDogrula(e.target.value);
-              }}
-              aria-invalid={hedefHata ? true : undefined}
-              className={
-                hedefHata ? "border-destructive focus-visible:ring-destructive" : ""
-              }
-            />
-            {hedefHata ? (
-              <p className="text-xs text-destructive">{hedefHata}</p>
-            ) : (
-              <p className="text-xs text-muted-foreground">
-                {t("hedefSifirIpucu")}
-              </p>
-            )}
-          </div>
         </div>
 
         <DialogFooter>
@@ -1858,7 +1652,7 @@ function DuzenleDiyalog({
           </Button>
           <Button
             onClick={kaydet}
-            disabled={!!sayfaHata || !!hedefHata || !isim.trim()}
+            disabled={!!sayfaHata || !isim.trim()}
           >
             {t("kaydet")}
           </Button>
