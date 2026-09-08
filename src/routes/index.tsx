@@ -1652,7 +1652,7 @@ function DuzenleDiyalog({
           </Button>
           <Button
             onClick={kaydet}
-            disabled={!!sayfaHata || !!hedefHata || !isim.trim()}
+            disabled={!!sayfaHata || !isim.trim()}
           >
             {t("kaydet")}
           </Button>
