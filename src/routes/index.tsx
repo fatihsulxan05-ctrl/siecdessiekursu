@@ -21,6 +21,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import AidatPanel from "@/components/AidatPanel";
 import {
   Select,
   SelectContent,
@@ -354,6 +355,8 @@ function Index() {
   const [yeniParolaTekrar, setYeniParolaTekrar] = useState("");
   const [parolaDegistirHata, setParolaDegistirHata] = useState<string | null>(null);
 
+  const [sekme, setSekme] = useState<"hafizlik" | "aidat">("hafizlik");
+
   const [vermediAcik, setVermediAcik] = useState(false);
   const [raporAcik, setRaporAcik] = useState(false);
 
@@ -552,6 +555,28 @@ function Index() {
           </div>
         </header>
 
+        <div className="mb-6 flex justify-center">
+          <div className="inline-flex w-full max-w-md rounded-full border border-border bg-secondary/40 p-1 sm:w-auto">
+            {([
+              ["hafizlik", "Hafızlık Takibi"],
+              ["aidat", "Aidat Takibi"],
+            ] as const).map(([k, etiket]) => (
+              <button
+                key={k}
+                type="button"
+                onClick={() => setSekme(k)}
+                className={`flex-1 whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition sm:px-8 sm:text-base ${
+                  sekme === k
+                    ? "bg-primary text-primary-foreground shadow"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {etiket}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <Card className="mb-6 border-accent/40 bg-secondary/40">
           <CardContent className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-wrap items-center gap-2">
@@ -641,6 +666,14 @@ function Index() {
           </CardContent>
         </Card>
 
+        {sekme === "aidat" ? (
+          <AidatPanel
+            talebeler={talebeler}
+            hocaModu={hocaModu}
+            onTalebe={(t) => setProfilGoster(t)}
+          />
+        ) : (
+        <>
         <div className="mb-3 grid grid-cols-2 gap-3">
           <OzetKart etiket={tr("toplamTalebe")} deger={ozet.toplam} />
           <OzetKart
@@ -830,6 +863,8 @@ function Index() {
               <Plus className="h-4 w-4" /> {tr("talebeEkle")}
             </Button>
           </div>
+        )}
+        </>
         )}
       </div>
 
