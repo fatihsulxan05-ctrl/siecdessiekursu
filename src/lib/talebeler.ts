@@ -6,6 +6,8 @@ import {
   updateDoc,
   deleteDoc,
   writeBatch,
+  getDoc,
+  setDoc,
   query,
   orderBy,
 } from "firebase/firestore";
@@ -35,6 +37,7 @@ export type Talebe = {
   fikihGunler?: Record<string, number[]>;
   hadisNo?: number;
   hadisGunler?: Record<string, number[]>;
+  aidat?: Record<string, boolean>;
 };
 
 const COL = "talebeler";
@@ -77,6 +80,10 @@ export function talebeleriDinle(
             v.hadisGunler && typeof v.hadisGunler === "object"
               ? (v.hadisGunler as Record<string, number[]>)
               : {},
+          aidat:
+            v.aidat && typeof v.aidat === "object"
+              ? (v.aidat as Record<string, boolean>)
+              : {},
         };
       });
       cb(liste);
@@ -110,4 +117,39 @@ export async function topluHedefGuncelle(ids: string[], hedef: number) {
     batch.update(doc(db, COL, id), { hedefHaftalik: hedef }),
   );
   await batch.commit();
+}
+
+// ---- Aidat (aylık ödeme) ----
+
+const AYAR_COL = "ayarlar";
+const AYAR_DOC = "genel";
+
+export async function aidatTutariniOku(): Promise<number> {
+  try {
+    const snap = await getDoc(doc(db, AYAR_COL, AYAR_DOC));
+    const v = snap.data()?.aidatTutar;
+    return typeof v === "number" ? v : 0;
+  } catch {
+    return 0;
+  }
+}
+
+export function aidatTutariniDinle(cb: (tutar: number) => void) {
+  return onSnapshot(doc(db, AYAR_COL, AYAR_DOC), (snap) => {
+    const v = snap.data()?.aidatTutar;
+    cb(typeof v === "number" ? v : 0);
+  });
+}
+
+export async function aidatTutariKaydet(tutar: number) {
+  await setDoc(doc(db, AYAR_COL, AYAR_DOC), { aidatTutar: tutar }, { merge: true });
+}
+
+export async function aidatOdemeAyarla(
+  t: Talebe,
+  ayKey: string,
+  odendi: boolean,
+) {
+  const harita = { ...(t.aidat ?? {}), [ayKey]: odendi };
+  await talebeGuncelle(t.id, { aidat: harita });
 }
