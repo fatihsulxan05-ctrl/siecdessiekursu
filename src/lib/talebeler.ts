@@ -6,6 +6,8 @@ import {
   updateDoc,
   deleteDoc,
   writeBatch,
+  getDoc,
+  setDoc,
   query,
   orderBy,
 } from "firebase/firestore";
@@ -118,7 +120,6 @@ export async function topluHedefGuncelle(ids: string[], hedef: number) {
 }
 
 // ---- Aidat (aylık ödeme) ----
-import { getDoc, setDoc } from "firebase/firestore";
 
 const AYAR_COL = "ayarlar";
 const AYAR_DOC = "genel";
