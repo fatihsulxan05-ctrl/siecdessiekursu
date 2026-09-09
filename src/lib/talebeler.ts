@@ -38,6 +38,8 @@ export type Talebe = {
   hadisNo?: number;
   hadisGunler?: Record<string, number[]>;
   aidat?: Record<string, boolean>;
+  aidatSadece?: boolean;
+  aidatHaric?: boolean;
 };
 
 const COL = "talebeler";
@@ -84,6 +86,8 @@ export function talebeleriDinle(
             v.aidat && typeof v.aidat === "object"
               ? (v.aidat as Record<string, boolean>)
               : {},
+          aidatSadece: v.aidatSadece === true,
+          aidatHaric: v.aidatHaric === true,
         };
       });
       cb(liste);
